@@ -1,0 +1,7 @@
+
+*.o
+*.exe
+
+
+# Eclipse files
+.settings
