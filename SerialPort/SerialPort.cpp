@@ -14,7 +14,7 @@ using namespace std;
 
 const static char* SERIAL_PORT = "\\\\.\\COM3";
 
-static int MILL_SECONDS = 1000;
+static int MICRO_SECONDS = 1000 * 1000;
 // controls the DTR line
 static double FREQUENCY = 0.5;
 // controls the RTS line
@@ -51,7 +51,7 @@ void run() {
 		SetCommState(hSerialPort, &serialParams);
 
 		// thread waits for X milliseconds
-		chrono::milliseconds dura((int) (1/FREQUENCY) * MILL_SECONDS);
+		chrono::microseconds dura((int) (1/FREQUENCY) * MICRO_SECONDS);
 		this_thread::sleep_for(dura);
 	}
 
