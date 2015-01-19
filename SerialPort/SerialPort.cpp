@@ -1,12 +1,12 @@
 
 
 #include <iostream>
-
-#include <thread>
-#include <chrono>
+#include <cstdlib>
 
 #include <stdio.h>
-#include <windows.h>
+#include <pthread.h>
+#include <unistd.h>
+
 
 
 using namespace std;
@@ -14,17 +14,16 @@ using namespace std;
 
 const static char* SERIAL_PORT = "\\\\.\\COM3";
 
-static int MICRO_SECONDS = 1000 * 1000;
-// controls the DTR line
-static double FREQUENCY = 0.5;
-// controls the RTS line
-static int RTS_LINE = 1;
-// stops the serial port thread
-static bool running = true;
+static const int DIRECTION_UP = 0;
+static const int DIRECTION_DOWN = 1;
+
+static int DURATION = 4 * 1000;
+static int DIRECTION = DIRECTION_DOWN;
 
 
 
-void run() {
+void runActuation()
+{
 	HANDLE hSerialPort = CreateFile(SERIAL_PORT, (GENERIC_READ | GENERIC_WRITE),
 			 0,	0, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
 
@@ -33,28 +32,60 @@ void run() {
 		return;
 	}
 
-	while(running) {
-		DCB serialParams = { 0 };
-		serialParams.DCBlength = sizeof(serialParams);
+	cout << "Start actuation..." << endl;
 
-		// get the current configuration
-		GetCommState(hSerialPort, &serialParams);
+	DCB serialParams = { 0 };
+	serialParams.DCBlength = sizeof(serialParams);
 
-		// set the DTR
-		if(DTR_CONTROL_ENABLE == serialParams.fDtrControl) {
-			serialParams.fDtrControl = DTR_CONTROL_DISABLE;
-		} else {
-			serialParams.fDtrControl = DTR_CONTROL_ENABLE;
-		}
+	// get the current configuration
+	GetCommState(hSerialPort, &serialParams);
+	// set the DTR
+	serialParams.fDtrControl = DTR_CONTROL_ENABLE;
+	// write the configuration
+	SetCommState(hSerialPort, &serialParams);
 
-		// write the configuration
-		SetCommState(hSerialPort, &serialParams);
+	Sleep(DURATION);
 
-		// thread waits for X milliseconds
-		chrono::microseconds dura((int) (1/FREQUENCY) * MICRO_SECONDS);
-		this_thread::sleep_for(dura);
+	// get the current configuration
+	GetCommState(hSerialPort, &serialParams);
+	// set the DTR
+	serialParams.fDtrControl = DTR_CONTROL_DISABLE;
+	// write the configuration
+	SetCommState(hSerialPort, &serialParams);
+
+	CloseHandle(hSerialPort);
+	return;
+}
+
+
+void switchDirection() {
+	HANDLE hSerialPort = CreateFile(SERIAL_PORT, (GENERIC_READ | GENERIC_WRITE),
+			 0,	0, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
+
+	if(INVALID_HANDLE_VALUE == hSerialPort) {
+		cout << "Unable to connect to serial port " << SERIAL_PORT << endl;
+		pthread_exit(NULL);
 	}
 
+	DCB serialParams = { 0 };
+	serialParams.DCBlength = sizeof(serialParams);
+
+	// get the current configuration
+	GetCommState(hSerialPort, &serialParams);
+	// set the DTR
+
+	if(DIRECTION == DIRECTION_UP) {
+		DIRECTION = DIRECTION_DOWN;
+		cout << "Set direction to down" << endl;
+		serialParams.fRtsControl = RTS_CONTROL_ENABLE;
+	} else {
+		DIRECTION = DIRECTION_UP;
+		cout << "Set direction to up" << endl;
+		serialParams.fRtsControl = RTS_CONTROL_DISABLE;
+	}
+
+	// write the configuration
+	SetCommState(hSerialPort, &serialParams);
 	CloseHandle(hSerialPort);
 }
 
@@ -64,25 +95,20 @@ void mainMenu() {
 
 	while(true) {
 		cout << "Please select one of the following options:" << endl;
-		cout << "1: change the frequency (DTR)" << endl;
-		cout << "2: change the ???? (RTS)" << endl;
-		cout << "e: end the program" << endl;
+		cout << "1: start actuation" << endl;
+		cout << "2: switch direction" << endl;
+		cout << "e: end" << endl;
 
-		input = getchar();
-		cout << endl;
+		cin >> input;
 
 		switch (input) {
 			case '1':
-				cout << "Set the frequency in Hz (DTR)" << endl;
-				cin >> FREQUENCY;
+				runActuation();
 				break;
 			case '2':
-				cout << "Set the ???? in Hz (RTS)" << endl;
-				cin >> RTS_LINE;
+				switchDirection();
 				break;
 			case 'e':
-				// exit the program
-				running = false;
 				return;
 			default:
 				cout << "Invalid input" << endl;
@@ -92,12 +118,7 @@ void mainMenu() {
 }
 
 
-int main() {
-	// starts the serial port thread
-	thread serialPortThread(run);
-	// menu for changing the frequency
+int main ()
+{
 	mainMenu();
-	// don't stop the program until the thread has ended
-	serialPortThread.join();
 }
-
