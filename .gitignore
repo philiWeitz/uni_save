@@ -5,3 +5,7 @@
 
 # Eclipse files
 .settings
+
+# Java
+bin
+gen
