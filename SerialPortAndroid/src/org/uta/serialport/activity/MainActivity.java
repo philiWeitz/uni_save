@@ -100,7 +100,6 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         serialPortUtil.startConnection();
-        serialPortUtil.drivePins(SerialPortUtil.MOVE_UP);
     }
 
     
@@ -114,30 +113,30 @@ public class MainActivity extends Activity {
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
 			
-		if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+		if(event.getAction() == android.view.MotionEvent.ACTION_UP) {
 			// stop all vibration
-			touchCoordinatesView.setText("Touch released");
 			serialPortUtil.clearAllPins();
-		} else {		
-			if(isTouchingView(event,areaLeft)) {
-				touchCoordinatesView.setText("To the left - X: " + event.getRawX() + " - Y: " + event.getRawY());
-				serialPortUtil.drivePins(SerialPortUtil.MOVE_LEFT);
-			} else if(isTouchingView(event,areaRight)) {
-				touchCoordinatesView.setText("To the right - X: " + event.getRawX() + " - Y: " + event.getRawY());
-				serialPortUtil.drivePins(SerialPortUtil.MOVE_RIGHT);
-			} else if(isTouchingView(event,areaTop)) {
-				touchCoordinatesView.setText("To the top - X: " + event.getRawX() + " - Y: " + event.getRawY());
-				serialPortUtil.drivePins(SerialPortUtil.MOVE_UP);
-			}  else if(isTouchingView(event,areaBottom)) {
-				touchCoordinatesView.setText("To the bottom - X: " + event.getRawX() + " - Y: " + event.getRawY());
-				serialPortUtil.drivePins(SerialPortUtil.MOVE_DOWN);
-			} else {
-				touchCoordinatesView.setText("Not touch area");
-			}
+			touchCoordinatesView.setText("Touch released");
+		} else if(isTouchingView(event,areaLeft)) {
+			serialPortUtil.drivePins(SerialPortUtil.MOVE_LEFT);
+			touchCoordinatesView.setText("To the left - X: " + event.getRawX() + " - Y: " + event.getRawY());
+		} else if(isTouchingView(event,areaRight)) {
+			serialPortUtil.drivePins(SerialPortUtil.MOVE_RIGHT);
+			touchCoordinatesView.setText("To the right - X: " + event.getRawX() + " - Y: " + event.getRawY());
+		} else if(isTouchingView(event,areaTop)) {
+			serialPortUtil.drivePins(SerialPortUtil.MOVE_UP);
+			touchCoordinatesView.setText("To the top - X: " + event.getRawX() + " - Y: " + event.getRawY());
+		} else if(isTouchingView(event,areaBottom)) {
+			serialPortUtil.drivePins(SerialPortUtil.MOVE_DOWN);
+			touchCoordinatesView.setText("To the bottom - X: " + event.getRawX() + " - Y: " + event.getRawY());
+		} else {
+			serialPortUtil.clearAllPins();
+			touchCoordinatesView.setText("Not touch area");
 		}
+		
 		return super.onTouchEvent(event);
     }
-	
+
 	
 	private boolean isTouchingView(MotionEvent event, View view) {
 		final int X = 0;
