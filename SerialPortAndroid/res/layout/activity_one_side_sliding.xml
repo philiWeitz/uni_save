@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="org.uta.serialport.activity.OneSideSlidingActivity" >
+
+    <RadioGroup
+        android:id="@+id/one_side_sliding_radio_group" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RadioButton
+            android:id="@+id/one_side_sliding_no_sliding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_side_sliding_no_sliding" />
+
+        <RadioButton
+            android:id="@+id/one_side_sliding_top_sliding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_side_sliding_to_top" />
+
+        <RadioButton
+            android:id="@+id/one_side_sliding_bottom_sliding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_side_sliding_to_bottom" />
+
+        <RadioButton
+            android:id="@+id/one_side_sliding_left_sliding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_side_sliding_to_left" />
+
+        <RadioButton
+            android:id="@+id/one_side_sliding_right_sliding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_side_sliding_to_right" />
+    </RadioGroup>
+
+    <NumberPicker
+        android:id="@+id/one_side_sliding_time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="80dp"/>
+
+</RelativeLayout>

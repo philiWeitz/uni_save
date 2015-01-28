@@ -2,10 +2,21 @@
 <resources>
 
     <string name="app_name">SerialPortAndroid</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Stick Slip</string>
     <string name="action_settings">Settings</string>
-    
     <string name="arrow_to_left_description">Arrow to the left</string>
-    
+    <string name="title_activity_full_screen_sliding">FullScreenSlidingActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_all_sides_sliding">AllSidesSlidingActivity</string>
 
+    
+    <string name="main_menu_button_all_sides_sliding">Slid to all sides</string>
+    <string name="main_menu_button_one_side_sliding">Slid to one side</string>
+    
+    <string name="one_side_sliding_no_sliding">Deactivated</string>
+    <string name="one_side_sliding_to_top">To the top</string> 
+    <string name="one_side_sliding_to_bottom">To the bottom</string> 
+    <string name="one_side_sliding_to_left">To the left</string> 
+    <string name="one_side_sliding_to_right">To the right</string>     
+    
 </resources>
