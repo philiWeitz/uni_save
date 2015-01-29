@@ -5,10 +5,12 @@ import org.uta.serialport.ftdi.SerialPortUtil;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 public class OneSideSlidingActivity extends Activity {
 
@@ -16,6 +18,7 @@ public class OneSideSlidingActivity extends Activity {
 	
 	private Handler handler = new Handler();	
 	private NumberPicker timePicker;
+	private TextView infoField;
 
 	
 	@Override
@@ -31,6 +34,8 @@ public class OneSideSlidingActivity extends Activity {
 		timePicker = (NumberPicker) findViewById(R.id.one_side_sliding_time_picker);
 		timePicker.setMaxValue(20);
 		timePicker.setMinValue(0);
+		
+		infoField = (TextView) findViewById(R.id.one_side_sliding_pressure);
 	}
 
 
@@ -82,6 +87,17 @@ public class OneSideSlidingActivity extends Activity {
 		}
 	}
 	
+	@Override
+    public boolean onTouchEvent(MotionEvent event) {	
+		
+		if(event.getAction() == android.view.MotionEvent.ACTION_UP) {
+			infoField.setText("");
+		} else {
+			infoField.setText("Pressure: " + event.getPressure() + "; Size: " + event.getSize());	
+		}
+			
+		return super.onTouchEvent(event);
+	}
 	
 	@Override
 	protected void onResume() {

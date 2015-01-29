@@ -8,6 +8,7 @@ public class SerialPortUtil {
 	public static final byte ALL_PINS_AS_BYTE = 0xf;
 	public static final byte NO_PINS_AS_BYTE = 0x0;
 	
+	// representing pin lists (0 = GPIO0, 1 = GPIO1, ...)
 	public static final int[] MOVE_UP = new int[] {0};
 	public static final int[] MOVE_DOWN = new int[] {0,1};
 	public static final int[] MOVE_LEFT = new int[] {2};
