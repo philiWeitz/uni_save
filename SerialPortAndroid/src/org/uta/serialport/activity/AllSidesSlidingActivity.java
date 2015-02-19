@@ -74,7 +74,7 @@ public class AllSidesSlidingActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        serialPortUtil.startConnection();
+        serialPortUtil.startGpioConnection();
     }
 
     
@@ -90,22 +90,22 @@ public class AllSidesSlidingActivity extends Activity {
 			
 		if(event.getAction() == android.view.MotionEvent.ACTION_UP) {
 			// stop all vibration
-			serialPortUtil.clearAllPins();
+			serialPortUtil.clearAllGpioPins();
 			touchCoordinatesView.setText("Touch released");
 		} else if(isTouchingView(event,areaLeft)) {
-			serialPortUtil.drivePins(SerialPortUtil.MOVE_LEFT);
+			serialPortUtil.driveGpioPins(SerialPortUtil.MOVE_LEFT);
 			touchCoordinatesView.setText("To the left - X: " + event.getRawX() + " - Y: " + event.getRawY());
 		} else if(isTouchingView(event,areaRight)) {
-			serialPortUtil.drivePins(SerialPortUtil.MOVE_RIGHT);
+			serialPortUtil.driveGpioPins(SerialPortUtil.MOVE_RIGHT);
 			touchCoordinatesView.setText("To the right - X: " + event.getRawX() + " - Y: " + event.getRawY());
 		} else if(isTouchingView(event,areaTop)) {
-			serialPortUtil.drivePins(SerialPortUtil.MOVE_UP);
+			serialPortUtil.driveGpioPins(SerialPortUtil.MOVE_UP);
 			touchCoordinatesView.setText("To the top - X: " + event.getRawX() + " - Y: " + event.getRawY());
 		} else if(isTouchingView(event,areaBottom)) {
-			serialPortUtil.drivePins(SerialPortUtil.MOVE_DOWN);
+			serialPortUtil.driveGpioPins(SerialPortUtil.MOVE_DOWN);
 			touchCoordinatesView.setText("To the bottom - X: " + event.getRawX() + " - Y: " + event.getRawY());
 		} else {
-			serialPortUtil.clearAllPins();
+			serialPortUtil.clearAllGpioPins();
 			touchCoordinatesView.setText("Not touch area");
 		}
 		

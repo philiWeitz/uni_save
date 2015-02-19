@@ -5,46 +5,51 @@ import android.content.Context;
 
 public class SerialPortUtil {
 	
+	public static final int PWM_PERIOD_IN_MS = 1;
+	
 	public static final byte ALL_PINS_AS_BYTE = 0xf;
 	public static final byte NO_PINS_AS_BYTE = 0x0;
 	
 	// representing pin lists (0 = GPIO0, 1 = GPIO1, ...)
-	public static final int[] MOVE_UP = new int[] {0};
-	public static final int[] MOVE_DOWN = new int[] {0,1};
-	public static final int[] MOVE_LEFT = new int[] {2};
-	public static final int[] MOVE_RIGHT = new int[] {2,3};
+	public static final int MOVE_UP = 0;
+	public static final int MOVE_DOWN = 1;
+	public static final int MOVE_LEFT = 2;
+	public static final int MOVE_RIGHT = 3;
 	
 	
 	private byte currentDriving = 0;
-	private FT311GPIOInterface fpgiInterface;
+	private FT311GPIOInterface fpgiGpioInterface;
+	private FT311PWMInterface fpgiPwmInterface;
 	
 	
 	public SerialPortUtil(Context context) {
-		fpgiInterface = new FT311GPIOInterface(context);
+		fpgiGpioInterface = new FT311GPIOInterface(context);
+		fpgiPwmInterface = new FT311PWMInterface(context);
 	}
 	
 	
 	public void stopConnection() {
-		fpgiInterface.DestroyAccessory();
+		fpgiGpioInterface.DestroyAccessory();
+		fpgiPwmInterface.DestroyAccessory();
 	}
 	
 	
-	public void startConnection() {
+	public void startGpioConnection() {
 		// establish the connection
-		fpgiInterface.ResumeAccessory();
+		fpgiGpioInterface.ResumeAccessory();
 		// set all pins into out mode
-		fpgiInterface.ConfigPort(ALL_PINS_AS_BYTE, NO_PINS_AS_BYTE);
+		fpgiGpioInterface.ConfigPort(ALL_PINS_AS_BYTE, NO_PINS_AS_BYTE);
 		// set all pins to low
-		clearAllPins();
+		clearAllGpioPins();
 	}
 	
 	
-	public void clearAllPins() {
-		drivePins(new int[] {});
+	public void clearAllGpioPins() {
+		driveGpioPins(new int[] {});
 	}
 	
 	
-	public void drivePins(int... pins) {
+	public void driveGpioPins(int... pins) {
 		byte mask = 0;
 		
 		for(int pin : pins) {
@@ -53,7 +58,25 @@ public class SerialPortUtil {
 		
 		if(mask != currentDriving) {
 			currentDriving = mask;
-			fpgiInterface.WritePort(mask);
+			fpgiGpioInterface.WritePort(mask);
+		}
+	}
+	
+	
+	public void startPwmConnection() {
+		// establish the connection
+		fpgiPwmInterface.ResumeAccessory();
+		// set period
+		fpgiPwmInterface.SetPeriod(PWM_PERIOD_IN_MS);
+		// resets all PWM channels
+		fpgiPwmInterface.Reset();
+	}
+	
+	
+	// sets the duty cycle (5% up to 100%)
+	public void setPwmDutyCycle(byte pwmChannel, byte dutyCycle) {
+		if(pwmChannel >= 0 && pwmChannel < 4) {
+			fpgiPwmInterface.SetDutyCycle(pwmChannel, dutyCycle);
 		}
 	}
 }

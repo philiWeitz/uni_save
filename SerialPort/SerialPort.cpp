@@ -1,10 +1,10 @@
 
+#include <windows.h>
 
 #include <iostream>
 #include <cstdlib>
 
 #include <stdio.h>
-#include <pthread.h>
 #include <unistd.h>
 
 
@@ -64,7 +64,7 @@ void switchDirection() {
 
 	if(INVALID_HANDLE_VALUE == hSerialPort) {
 		cout << "Unable to connect to serial port " << SERIAL_PORT << endl;
-		pthread_exit(NULL);
+		return;
 	}
 
 	DCB serialParams = { 0 };

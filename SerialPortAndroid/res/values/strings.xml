@@ -18,5 +18,5 @@
     <string name="one_side_sliding_to_bottom">To the bottom</string> 
     <string name="one_side_sliding_to_left">To the left</string> 
     <string name="one_side_sliding_to_right">To the right</string>     
-    
+    <string name="one_side_sliding_pulses">Send 4 Pulses</string>    
 </resources>
