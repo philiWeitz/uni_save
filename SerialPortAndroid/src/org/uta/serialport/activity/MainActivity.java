@@ -21,9 +21,11 @@ public class MainActivity extends Activity {
 	private void initUI() {
 		Button slideAllSidesButton = (Button) findViewById(R.id.button_slide_all_sides);
 		Button slideOneSideButton = (Button) findViewById(R.id.button_slide_one_side);
+		Button pwmButton = (Button) findViewById(R.id.button_pwm);
 		
 		slideAllSidesButton.setOnClickListener(slideAllSidesClick);
 		slideOneSideButton.setOnClickListener(slideOneSideClick);
+		pwmButton.setOnClickListener(pwmClick);
 	}
 
 	
@@ -39,6 +41,14 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			startArctivity(AllSidesSlidingActivity.class);
+		}
+	};
+	
+	
+	private OnClickListener pwmClick = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			startArctivity(PwmActivity.class);
 		}
 	};
 	

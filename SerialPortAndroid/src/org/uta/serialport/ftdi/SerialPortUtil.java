@@ -5,8 +5,6 @@ import android.content.Context;
 
 public class SerialPortUtil {
 	
-	public static final int PWM_PERIOD_IN_MS = 1;
-	
 	public static final byte ALL_PINS_AS_BYTE = 0xf;
 	public static final byte NO_PINS_AS_BYTE = 0x0;
 	
@@ -63,11 +61,14 @@ public class SerialPortUtil {
 	}
 	
 	
-	public void startPwmConnection() {
+	/************************************************************************************/
+	
+	
+	public void startPwmConnection(int period) {
 		// establish the connection
 		fpgiPwmInterface.ResumeAccessory();
 		// set period
-		fpgiPwmInterface.SetPeriod(PWM_PERIOD_IN_MS);
+		fpgiPwmInterface.SetPeriod(period);
 		// resets all PWM channels
 		fpgiPwmInterface.Reset();
 	}
@@ -78,5 +79,10 @@ public class SerialPortUtil {
 		if(pwmChannel >= 0 && pwmChannel < 4) {
 			fpgiPwmInterface.SetDutyCycle(pwmChannel, dutyCycle);
 		}
+	}
+	
+	
+	public void setPwmPeriod(int period) {
+		fpgiPwmInterface.SetPeriod(period);
 	}
 }

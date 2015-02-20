@@ -9,15 +9,6 @@
     tools:context="org.uta.serialport.activity.MainActivity" >
 
     <Button
-        android:id="@+id/button_slide_all_sides"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="170dp"
-        android:text="@string/main_menu_button_all_sides_sliding" />
-
-    <Button
         android:id="@+id/button_slide_one_side"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -25,5 +16,23 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:text="@string/main_menu_button_one_side_sliding" />
+
+    <Button
+        android:id="@+id/button_pwm"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_slide_one_side"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="@string/main_menu_button_pwm" />
+
+    <Button
+        android:id="@+id/button_slide_all_sides"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_slide_one_side"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="121dp"
+        android:text="@string/main_menu_button_all_sides_sliding" />
     
 </RelativeLayout>
