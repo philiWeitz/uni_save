@@ -1,6 +1,7 @@
 
 *.o
 *.exe
+*.dll
 
 
 # Eclipse files
@@ -9,3 +10,4 @@
 # Java
 bin
 gen
+target
