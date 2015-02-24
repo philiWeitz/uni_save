@@ -16,12 +16,14 @@
     <string name="one_side_sliding_to_left">To the left</string>
     <string name="one_side_sliding_to_right">To the right</string>
     <string name="one_side_sliding_pulses">Send 4 Pulses</string>
-    
     <string name="title_activity_pwm">PwmActivity</string>
     <string name="button_active">Active</string>
-    <string name="button_not_active">Not Active</string>   
-    <string name="label_actuator1">Actuator 1 (GPIO1)</string> 
-    <string name="label_actuator2">Actuator 2 (GPIO2)</string>       
-    <string name="label_actuator3">Actuator 3 (GPIO3)</string> 
-    <string name="label_actuator4">Actuator 4 (GPIO4)</string>          
+    <string name="button_not_active">Not Active</string>
+    <string name="label_actuator1">Actuator 1 (GPIO1)</string>
+    <string name="label_actuator2">Actuator 2 (GPIO2)</string>
+    <string name="label_actuator3">Actuator 3 (GPIO3)</string>
+    <string name="label_actuator4">Actuator 4 (GPIO4)</string>
+    <string name="title_activity_audio_waveform">AudioWaveformActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

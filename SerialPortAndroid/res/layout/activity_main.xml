@@ -32,7 +32,16 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/button_slide_one_side"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="121dp"
+        android:layout_marginTop="90dp"
         android:text="@string/main_menu_button_all_sides_sliding" />
+
+    <Button
+        android:id="@+id/audio_waveform"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_pwm"
+        android:layout_below="@+id/button_pwm"
+        android:layout_marginTop="45dp"
+        android:text="Audio Waveform" />
     
 </RelativeLayout>

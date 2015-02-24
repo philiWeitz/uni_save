@@ -7,33 +7,100 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class SerialPortController {
+public class SerialPortController implements Runnable {
 	private static Logger LOG = LogManager.getLogger(SerialPortController.class);
 	
 	private static final int DTR_SLEEP = 1000;
 	private static final int RTS_SLEEP = 500;
 	
-	private static final String COM_PORT = "COM3";
+	
+	private static boolean running = false;
 	private static SerialPortController instance;
 	
+	private static final String COM_PORT = "COM3";
+
 	
-	private DtrRtsThread currentRunning;
+	private TCPClient tcpClient;
 	private SerialPort serialPort;
+	private boolean signalLevel = true;
+	private CONTROL_BIT active = CONTROL_BIT.DTR;
 	
-	
-	public static SerialPortController getInstance() {
-		if(null == instance) {
-			instance = new SerialPortController();
-		}
-		return instance;
-	}
+
+	private enum CONTROL_BIT {
+		DTR,
+		RTS
+	};
 	
 	
 	private SerialPortController() {
-		
+		tcpClient = new TCPClient();
+		tcpClient.connectToServer();
 	}
 	
 	
+	public static void setDtrActive() {
+		if(running && null != instance) {
+			instance.setDTR();
+		} else {
+			LOG.error("Error: Not connected to serial port!");
+		}
+	}
+	
+	
+	public static void setRtsActive() {
+		if(running && null != instance) {
+			instance.setRTS();
+		} else {
+			LOG.error("Error: Not connected to serial port!");
+		}
+	}
+	
+	
+	public static void startControlThread() {
+		if(!running) {
+			running = true;
+			
+			instance = new SerialPortController();
+			Thread thread = new Thread(instance);
+			thread.setPriority(Thread.NORM_PRIORITY);
+			thread.setName("Serial Port Control");
+			thread.start();
+		}
+	}
+	
+	
+	public static void stopControlThread() {
+		running = false;
+		instance = null;
+	}
+	
+		
+	public void run() {
+		connectToSerialPort();
+		
+		while(running) {
+			try {
+				if(active == CONTROL_BIT.DTR) {
+					serialPort.setDTR(signalLevel);
+					Thread.sleep(DTR_SLEEP);			
+				} else {
+					serialPort.setRTS(signalLevel);
+					Thread.sleep(RTS_SLEEP);
+				}
+				
+				signalLevel = !signalLevel;
+				
+			} catch (SerialPortException e) {
+				LOG.error("Error setting DTR/RTS", e);
+			} catch (InterruptedException e) {
+				LOG.error("Error sending thread to sleep", e);
+			}
+		}
+
+		closeConnection();
+	};
+	
+		
 	public void connectToSerialPort() {
 		
         serialPort = new SerialPort(COM_PORT);
@@ -49,88 +116,48 @@ public class SerialPortController {
                                  false);
 
         } catch (SerialPortException ex) {
-            LOG.error("Error while connecting to serial port " + COM_PORT);
+            LOG.error("Can't connect to serial port " + COM_PORT);
+            running = false;
         }
 	}
 	
-	
+		
 	public void closeConnection() {
-		if(null != serialPort) {
+		if(null != serialPort && serialPort.isOpened()) {
             try {
 				serialPort.closePort();
+				tcpClient.disconnectFromServer();
 			} catch (SerialPortException e) {
 				LOG.error("Error while closing serial port " + COM_PORT);
 			}
 		}
-		
-		if(null != currentRunning) {
-			currentRunning.stopThread();
-		}
-	}
-	
-
-	public void startRtsThread() {
-		if(null != currentRunning) {
-			if(currentRunning instanceof RtsThread) {
-				return;
-			}
-			
-			currentRunning.stopThread();
-		}
-
-		currentRunning = new RtsThread();	
-		new Thread(currentRunning).start();
 	}
 	
 	
-	public void startDtrThread() {
-		if(null != currentRunning) {
-			if(currentRunning instanceof DtrThread) {
-				return;
-			}
-			
-			currentRunning.stopThread();
+	public void setDTR() {
+		active = CONTROL_BIT.DTR;
+		
+		try {
+			serialPort.setRTS(false);
+			LOG.info("Setting DTR");
+		} catch (SerialPortException e) {
+			LOG.error("Error setting DTR", e);
 		}
 		
-		currentRunning = new DtrThread();
-		new Thread(currentRunning).start();
+		tcpClient.sendMessage("Set DTR");
 	}
 	
 	
-	private class DtrThread extends DtrRtsThread {
+	public void setRTS() {
+		active = CONTROL_BIT.RTS;
 		
-		@Override
-		protected void setBitActive(boolean active) throws SerialPortException {
-			serialPort.setDTR(active);
+		try {
+			serialPort.setDTR(false);
+			LOG.info("Setting RTS");
+		} catch (SerialPortException e) {
+			LOG.error("Error setting RTS", e);
 		}
-
-		@Override
-		protected int getPeriodInMs() {
-			return DTR_SLEEP;
-		}
-
-		@Override
-		protected String getLogTag() {
-			return "DTR";
-		}
-	};
-
-
-	private class RtsThread extends DtrRtsThread {
-
-		@Override
-		protected void setBitActive(boolean active) throws SerialPortException {
-			serialPort.setRTS(active);
-		}
-
-		@Override
-		protected int getPeriodInMs() {
-			return RTS_SLEEP;
-		}
-
-		@Override
-		protected String getLogTag() {
-			return "RTS";
-		}
-	};
+		
+		tcpClient.sendMessage("Set RTS");
+	}
 }

@@ -9,7 +9,9 @@ import org.apache.logging.log4j.Logger;
 
 
 public class ClientMain {
-	private static Logger LOG = LogManager.getLogger(ClientMain.class);
+	private static Logger LOG = LogManager.getLogger(ClientMain.class);	
+
+	
 	
 	public static void main(String[] args) {
 		
@@ -18,8 +20,8 @@ public class ClientMain {
 	}
 	
 	
-	private static void init() {
-		SerialPortController.getInstance().connectToSerialPort();
+	private static void init() {		
+		SerialPortController.startControlThread();
 	}
 	
 	
@@ -28,7 +30,7 @@ public class ClientMain {
 		while(true) {
 			System.out.println("Please select an option:");
 			System.out.println("1. RTS");
-			System.out.println("2. DTS");
+			System.out.println("2. DTR");
 			System.out.println("3. End");
 			
 			try {
@@ -39,13 +41,13 @@ public class ClientMain {
 			
 				switch(input) {
 					case 1: 
-						SerialPortController.getInstance().startRtsThread();
+						SerialPortController.setRtsActive();
 						break;
 					case 2: 
-						SerialPortController.getInstance().startDtrThread();
+						SerialPortController.setDtrActive();
 						break;
 					default: 
-						SerialPortController.getInstance().closeConnection();
+						SerialPortController.stopControlThread();
 						return;
 				}
 			} catch(NumberFormatException e) {

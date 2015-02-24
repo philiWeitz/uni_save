@@ -22,10 +22,12 @@ public class MainActivity extends Activity {
 		Button slideAllSidesButton = (Button) findViewById(R.id.button_slide_all_sides);
 		Button slideOneSideButton = (Button) findViewById(R.id.button_slide_one_side);
 		Button pwmButton = (Button) findViewById(R.id.button_pwm);
+		Button audioWaveform = (Button) findViewById(R.id.audio_waveform);
 		
 		slideAllSidesButton.setOnClickListener(slideAllSidesClick);
 		slideOneSideButton.setOnClickListener(slideOneSideClick);
 		pwmButton.setOnClickListener(pwmClick);
+		audioWaveform.setOnClickListener(audioWaveformClick);
 	}
 
 	
@@ -51,6 +53,14 @@ public class MainActivity extends Activity {
 			startArctivity(PwmActivity.class);
 		}
 	};
+	
+	
+	private OnClickListener audioWaveformClick = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			startArctivity(AudioWaveformActivity.class);
+		}
+	};	
 	
 	
 	private void startArctivity(Class<?> activity) {

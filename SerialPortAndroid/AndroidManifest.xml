@@ -39,6 +39,10 @@
             android:name=".PwmActivity"
             android:label="@string/title_activity_pwm" >
         </activity>
+        <activity
+            android:name=".AudioWaveformActivity"
+            android:label="@string/title_activity_audio_waveform" >
+        </activity>
     </application>
 
 </manifest>
