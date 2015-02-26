@@ -35,27 +35,34 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp" />
 
-    <RadioGroup
-        android:id="@+id/one_side_sliding_radio_group" 
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:onClick="OffButtonClick"
+        android:width="150dp"
+        android:layout_marginBottom="15dp"
+        android:text="Off" />
 
-        <RadioButton
-            android:id="@+id/radioButton_wave_off"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:onClick="onRadioButtonClicked"
-            android:text="Off" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="SineWaveClick"
+        android:width="150dp"
+        android:layout_marginBottom="15dp"
+        android:text="Sine Wave" />
 
-        <RadioButton
-            android:id="@+id/radioButton_sine_wave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onRadioButtonClicked"
-            android:text="Sine Wave" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="SawtoothWaveClick"
+        android:width="150dp"
+        android:layout_marginBottom="15dp"
+        android:text="Sawtooth Wave" />
 
-    </RadioGroup>
+    <ToggleButton
+        android:id="@+id/toggle_button_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="IncreaseFrequencyTimerClick" />
 
 </LinearLayout>

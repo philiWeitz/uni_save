@@ -1,7 +1,5 @@
 package org.uta.serialport.activity;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,10 +9,10 @@ import org.uta.serialport.util.WaveFormGenerator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class AudioWaveformActivity extends Activity {
 
@@ -22,7 +20,15 @@ public class AudioWaveformActivity extends Activity {
 	private SeekBar channel1;
 	private TextView freqChannel1;
 	
+	private WAVE_FORM waveForm = WAVE_FORM.NONE;
 	private WaveFormGenerator waveFormGenerator;
+	
+	
+	private enum WAVE_FORM {
+		NONE,
+		SINE,
+		SAWTOOTH;
+	}
 	
 	
 	@Override
@@ -47,25 +53,34 @@ public class AudioWaveformActivity extends Activity {
 	}
 	
 	
-	public void onRadioButtonClicked(View view) {
-		
-		if(((RadioButton) view).isChecked()) {   
-			
-		    switch(view.getId()) {
-		        case R.id.radioButton_wave_off:
-		        	removeFrequencyTimer();
-		        	waveFormGenerator.stopPlaying();
-		            break;
-		        case R.id.radioButton_sine_wave:
-		        	waveFormGenerator.startPlaying(channel1.getProgress());
-		        	addFrequencyTimer();
-		            break;
-		        default:
-		        	break;
-		    }
-		}
+	public void OffButtonClick(View view) {
+		waveForm = WAVE_FORM.NONE;
+       	waveFormGenerator.stopPlaying();
+       	removeFrequencyTimer();
+       	
+       	ToggleButton button = (ToggleButton) findViewById(R.id.toggle_button_timer);
+       	button.setChecked(false);
 	}
 	
+	public void SineWaveClick(View view) {
+		waveForm = WAVE_FORM.SINE;
+		waveFormGenerator.startPlayingSineWave(channel1.getProgress());
+	}	
+       	
+	public void SawtoothWaveClick(View view) {
+		waveForm = WAVE_FORM.SAWTOOTH;
+       	waveFormGenerator.startPlayingSawtoothWave(channel1.getProgress());
+	}       	
+
+	public void IncreaseFrequencyTimerClick(View view) {
+		ToggleButton button = (ToggleButton) view;
+		
+		if(button.isChecked()) {
+			addFrequencyTimer();
+		} else {
+			removeFrequencyTimer();
+		}
+	}
 	
 	private OnSeekBarChangeListener channel1UpdateListener = new OnSeekBarChangeListener() {
 
@@ -79,7 +94,16 @@ public class AudioWaveformActivity extends Activity {
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			waveFormGenerator.startPlaying(channel1.getProgress());
+			switch(waveForm) {
+				case SINE:
+					waveFormGenerator.startPlayingSineWave(channel1.getProgress());
+					break;
+				case SAWTOOTH:
+					waveFormGenerator.startPlayingSawtoothWave(channel1.getProgress());
+					break;
+				default:
+					break;
+			}
 		}
 	};
 	
@@ -91,7 +115,17 @@ public class AudioWaveformActivity extends Activity {
 			      (new Runnable() {
 			         public void run() {
 			            channel1.setProgress(channel1.getProgress() + 10);
-			            waveFormGenerator.startPlaying(channel1.getProgress());
+			            
+						switch(waveForm) {
+							case SINE:
+								waveFormGenerator.startPlayingSineWave(channel1.getProgress());
+								break;
+							case SAWTOOTH:
+								waveFormGenerator.startPlayingSawtoothWave(channel1.getProgress());
+								break;
+							default:
+								break;
+						}			            
 			         }
 			      }, 0, 1, TimeUnit.SECONDS);
 	}
