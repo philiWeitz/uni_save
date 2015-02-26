@@ -11,37 +11,62 @@ public class Main {
 	protected static final int SAMPLE_RATE = 16 * 1024;
 
 	
-	private static byte[] createSinWaveBuffer(double freq, int ms) {
+	private static byte[] createSinWaveBuffer(double freq, int ms, int pulseGap) {
 		int samples = (int) ((ms * SAMPLE_RATE) / 1000);
 		byte[] output = new byte[samples];
 		
 		double period = (double) SAMPLE_RATE / freq;
+		double gap = 0;
 		
 		for (int i = 0; i < output.length; i++) {
-			double angle = 2.0 * Math.PI * i / period;
-			output[i] = (byte) (Math.sin(angle) * AMPLITUDE);
+			
+			if(gap <= 0) {
+				double angle = 2.0 * Math.PI * i / period;
+				output[i] = (byte) (Math.sin(angle) * AMPLITUDE);
+				
+				if(i > 0 && ((int) (i % period)) == 0) {
+					gap = period * pulseGap;
+				}
+			} else {
+				output[i] = (byte) 0;
+				--gap;
+			}
 		}
-
+		
 		return output;
 	}
 
 	
-	private static byte[] createSawToothWaveBuffer(double freq, int ms) {
-		int samples = (int) ((ms * SAMPLE_RATE) / 1000);
-		byte[] output = new byte[samples];
+	private static byte[] createSawToothWaveBuffer(double freq, int ms, int pulseGap) {
+	
+		int samplesPerSecond = (int) ((ms * SAMPLE_RATE) / 1000);		
+		byte[] output = new byte[samplesPerSecond];
 		
 		double period = (SAMPLE_RATE / freq);
-				
+		double gap = 0;
+		
 		for (int i = 0; i < output.length; i++) {
-			double y = ((i/period) % 1);
-			output[i] = (byte) (y * AMPLITUDE);
+			
+			if(gap <= 0) {
+				double y = ((i/period) % 1);
+				output[i] = (byte) (y * AMPLITUDE);
+
+				if(i > 0 && ((int) (i % period)) == 0) {
+					gap = period * pulseGap;
+				}
+			} else {
+				output[i] = (byte) 0;
+				--gap;
+			}
 		}
 
 		return output;
 	}
 	
 	
-	private static void playSawTooth(int freqStart, int freqStop, int steps, int timePerStep, int gap) throws LineUnavailableException, InterruptedException {
+	private static void playSound(int waveType, int freqStart, 
+			int freqStop, int steps, int timePerStep, int pulseGap) 
+					throws LineUnavailableException {
 		
 		final AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, true);
 		SourceDataLine line = AudioSystem.getSourceDataLine(af);
@@ -49,34 +74,19 @@ public class Main {
 		line.open(af, SAMPLE_RATE);
 		line.start();
 
-		for (double freq = freqStart; freq <= freqStop; freq += steps) {
-				byte[] toneBuffer = createSawToothWaveBuffer(freq, timePerStep);
-				line.write(toneBuffer, 0, toneBuffer.length);
+		for (double freq = freqStart; freq <= freqStop; freq += steps) {			
+			byte[] toneBuffer;
 			
-				if(gap != 0) {
-					line.stop();
-					Thread.sleep(gap);
-					line.start();
-				}
-				
-				System.out.println("Frequency: " + freq);
-		}
-	
-		line.drain();
-		line.close();
-	}
-	
-	
-	private static void playSineWave(int freqStart, int freqStop, int steps, int timePerStep, int gap) throws LineUnavailableException {
-		
-		final AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, true);
-		SourceDataLine line = AudioSystem.getSourceDataLine(af);
-		
-		line.open(af, SAMPLE_RATE);
-		line.start();
+			switch (waveType) {
+				case 0:
+					toneBuffer = createSinWaveBuffer(freq, timePerStep, pulseGap);
+					break;
+				case 1:
+					toneBuffer = createSawToothWaveBuffer(freq, timePerStep, pulseGap);
+					break;
+				default: return;
+			}
 
-		for (double freq = freqStart; freq <= freqStop; freq += steps) {
-			byte[] toneBuffer = createSinWaveBuffer(freq, timePerStep);
 			line.write(toneBuffer, 0, toneBuffer.length);
 			System.out.println("Frequency: " + freq);
 		}
@@ -84,7 +94,6 @@ public class Main {
 		line.drain();
 		line.close();
 	}
-	
 	
 	
 	public static void main(String[] args) throws LineUnavailableException, InterruptedException {
@@ -95,13 +104,10 @@ public class Main {
 			int freqStop = Integer.parseInt(args[2]);			
 			int steps = Integer.parseInt(args[3]);
 			int timePerStep = Integer.parseInt(args[4]);
-			int gap =  Integer.parseInt(args[5]);
+			int pulseGap =  Integer.parseInt(args[5]);
 			
-			if(waveType == 0) {
-				playSineWave(freqStart, freqStop, steps, timePerStep, gap);
-			} else {
-				playSawTooth(freqStart, freqStop, steps, timePerStep, gap);
-			}
+			playSound(waveType, freqStart, freqStop, steps, timePerStep, pulseGap);
+			
 		} else {
 			System.out.println("Arguments:");
 			System.out.println("1. Wave Type (0 = sine, 1 = Sawtooth)");
@@ -109,7 +115,7 @@ public class Main {
 			System.out.println("3. End Frequency");
 			System.out.println("4. Frequency Steps");
 			System.out.println("5. Time per step (in ms)");
-			System.out.println("6. Gap between pulses (in ms)");			
+			System.out.println("6. Gap between 2 pulses (in nr of pulses)");			
 		}
 	}
 }
