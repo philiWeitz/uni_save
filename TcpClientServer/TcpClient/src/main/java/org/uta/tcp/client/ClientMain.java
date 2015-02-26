@@ -12,9 +12,7 @@ public class ClientMain {
 	private static Logger LOG = LogManager.getLogger(ClientMain.class);	
 
 	
-	
 	public static void main(String[] args) {
-		
 		init();
 		mainMenu();
 	}
@@ -46,9 +44,11 @@ public class ClientMain {
 					case 2: 
 						SerialPortController.setDtrActive();
 						break;
-					default: 
+					case 3:
 						SerialPortController.stopControlThread();
 						return;
+					default: 
+						break;
 				}
 			} catch(NumberFormatException e) {
 				System.out.println("Please type in a valid integer number");

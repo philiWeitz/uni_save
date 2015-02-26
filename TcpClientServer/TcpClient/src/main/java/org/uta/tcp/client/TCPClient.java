@@ -17,6 +17,7 @@ import org.uta.tcp.server.ServerUtil;
 public class TCPClient {
 	private static Logger LOG = LogManager.getLogger(TCPClient.class);
 
+	private String serverAddress;
 	private Socket clientSocket;
 	private PrintWriter outToServer;
 	private boolean connected = false;
@@ -24,8 +25,16 @@ public class TCPClient {
 		
 	public boolean connectToServer() {
 		try {
-			clientSocket = new Socket(ServerUtil.SERVER_ADDRESS,
-					ServerUtil.TCP_PORT);
+			InputStreamReader sr =new InputStreamReader(System.in);
+			BufferedReader br=new BufferedReader(sr);	
+			
+			System.out.println("Please type in the host address:");
+			serverAddress = br.readLine();
+	
+			System.out.println("Connecting to \"" + serverAddress + "\" ...");
+			clientSocket = new Socket(serverAddress,
+					ServerUtil.TCP_PORT);			
+			System.out.println("Connected");
 			
 			outToServer = new PrintWriter(clientSocket.getOutputStream(),true);			
 
@@ -38,9 +47,9 @@ public class TCPClient {
 			
 			return true;
 		} catch (UnknownHostException e) {
-			LOG.error("Can't connect to server " + ServerUtil.SERVER_ADDRESS, e);
+			LOG.error("Can't connect to " + serverAddress, e);
 		} catch (IOException e) {
-			LOG.error("Error: can't connect to server \"" + ServerUtil.SERVER_ADDRESS + "\"");
+			LOG.error("Error: can't connect to \"" + serverAddress + "\"");
 		}
 		return false;
 	}
@@ -64,7 +73,7 @@ public class TCPClient {
 		if(connected) {
 			outToServer.println(msg);
 		} else {
-			LOG.error("TCP Error: Not connected to server \"" + ServerUtil.SERVER_ADDRESS + "\"");
+			LOG.error("TCP Error: Not connected to log server");
 		}
 	}
 	

@@ -62,7 +62,7 @@ public class SerialPortController implements Runnable {
 			
 			instance = new SerialPortController();
 			Thread thread = new Thread(instance);
-			thread.setPriority(Thread.NORM_PRIORITY);
+			thread.setPriority(Thread.MAX_PRIORITY);
 			thread.setName("Serial Port Control");
 			thread.start();
 		}
