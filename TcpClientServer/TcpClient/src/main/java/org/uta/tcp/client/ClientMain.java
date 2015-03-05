@@ -13,15 +13,9 @@ public class ClientMain {
 
 	
 	public static void main(String[] args) {
-		init();
 		mainMenu();
 	}
-	
-	
-	private static void init() {		
-		SerialPortController.startControlThread();
-	}
-	
+
 	
 	private static void mainMenu() {
 		
@@ -29,7 +23,8 @@ public class ClientMain {
 			System.out.println("Please select an option:");
 			System.out.println("1. RTS");
 			System.out.println("2. DTR");
-			System.out.println("3. End");
+			System.out.println("3. HC");
+			System.out.println("4. End");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
@@ -39,13 +34,18 @@ public class ClientMain {
 			
 				switch(input) {
 					case 1: 
-						SerialPortController.setRtsActive();
+						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 						break;
 					case 2: 
-						SerialPortController.setDtrActive();
+						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 						break;
-					case 3:
-						SerialPortController.stopControlThread();
+					case 3: 
+						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
+						break;						
+					case 4:
+						SerialPortController.closePortInstance(TcpUtil.dtrPort);
+						SerialPortController.closePortInstance(TcpUtil.rtsPort);
+						SerialPortController.closePortInstance(TcpUtil.dataPort);						
 						return;
 					default: 
 						break;

@@ -17,8 +17,8 @@
 
 
 	<modules>
-		<module>TcpServer</module>
 		<module>TcpClient</module>
+		<module>TcpServer</module>
 	</modules>
 
 

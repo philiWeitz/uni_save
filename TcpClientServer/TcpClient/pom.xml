@@ -16,12 +16,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.uta.tcp</groupId>
-			<artifactId>TcpServer</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.scream3r</groupId>
 			<artifactId>jssc</artifactId>
 		</dependency>

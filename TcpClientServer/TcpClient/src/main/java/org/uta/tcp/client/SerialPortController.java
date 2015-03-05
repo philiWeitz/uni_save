@@ -1,5 +1,8 @@
 package org.uta.tcp.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
@@ -7,103 +10,88 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-public class SerialPortController implements Runnable {
+
+public class SerialPortController {
 	private static Logger LOG = LogManager.getLogger(SerialPortController.class);
 	
-	private static final int DTR_SLEEP = 1000;
+	
+	private static Map<PORT, SerialPortController> ports = 
+			new HashMap<PORT, SerialPortController>(); 
+	
+	
+	private static final int DTR_SLEEP = 500;
 	private static final int RTS_SLEEP = 500;
 	
-	
-	private static boolean running = false;
-	private static SerialPortController instance;
-	
-	private static final String COM_PORT = "COM3";
-
-	
-	private TCPClient tcpClient;
-	private SerialPort serialPort;
-	private boolean signalLevel = true;
-	private CONTROL_BIT active = CONTROL_BIT.DTR;
-	
-
-	private enum CONTROL_BIT {
-		DTR,
-		RTS
-	};
-	
-	
-	private SerialPortController() {
-		tcpClient = new TCPClient();
-		tcpClient.connectToServer();
-	}
-	
-	
-	public static void setDtrActive() {
-		if(running && null != instance) {
-			instance.setDTR();
-		} else {
-			LOG.error("Error: Not connected to serial port!");
-		}
-	}
-	
-	
-	public static void setRtsActive() {
-		if(running && null != instance) {
-			instance.setRTS();
-		} else {
-			LOG.error("Error: Not connected to serial port!");
-		}
-	}
-	
-	
-	public static void startControlThread() {
-		if(!running) {
-			running = true;
 			
-			instance = new SerialPortController();
-			Thread thread = new Thread(instance);
-			thread.setPriority(Thread.MAX_PRIORITY);
-			thread.setName("Serial Port Control");
-			thread.start();
+	public enum PORT {
+		COM1,
+		COM2,
+		COM3
+	}
+		
+	
+	public static SerialPortController getPortInstance(PORT port) {
+		if(!ports.containsKey(port)) {
+			
+			// connect to port
+			SerialPortController controller = new SerialPortController(port);
+			controller.connectToSerialPort();
+			
+			// prevents a port from getting opened multiple times 
+			ports.put(port, controller);
+		}
+		
+		return ports.get(port);
+	}
+	
+	
+	public static void closePortInstance(PORT port) {
+		if(ports.containsKey(port)) {
+			
+			SerialPortController controller = ports.get(port);
+			controller.closeConnection();
+			
+			ports.remove(port);
 		}
 	}
 	
 	
-	public static void stopControlThread() {
-		running = false;
-		instance = null;
-	}
 	
-		
-	public void run() {
-		connectToSerialPort();
-		
-		while(running) {
-			try {
-				if(active == CONTROL_BIT.DTR) {
-					serialPort.setDTR(signalLevel);
-					Thread.sleep(DTR_SLEEP);			
-				} else {
-					serialPort.setRTS(signalLevel);
-					Thread.sleep(RTS_SLEEP);
-				}
-				
-				signalLevel = !signalLevel;
-				
-			} catch (SerialPortException e) {
-				LOG.error("Error setting DTR/RTS", e);
-			} catch (InterruptedException e) {
-				LOG.error("Error sending thread to sleep", e);
-			}
-		}
+	
+	/*********************************************************************************************/	
+	
+	
+	
+	private PORT port;
+	private TcpClient tcpClient;
+	private SerialPort serialPort;
+	
 
-		closeConnection();
-	};
+	private SerialPortController(PORT port) {
+		this.port = port;
+	}
 	
 		
-	public void connectToSerialPort() {
+	public void setDtrPulse() {
+		startPortThread(new DtrThread());
+	}
+	
+	
+	public void setRtsPulse() {
+		startPortThread(new RtsThread());
+	}
+
 		
-        serialPort = new SerialPort(COM_PORT);
+	public void sendData() {
+		startPortThread(new sendDataThread());
+	}
+	
+	
+	private boolean connectToSerialPort() {		
+		tcpClient = new TcpClient();
+		tcpClient.connectToServer();
+		
+        serialPort = new SerialPort(port.toString());
         
         try {
             serialPort.openPort();
@@ -116,48 +104,110 @@ public class SerialPortController implements Runnable {
                                  false);
 
         } catch (SerialPortException ex) {
-            LOG.error("Can't connect to serial port " + COM_PORT);
-            running = false;
+            LOG.error("Can't connect to serial port " + port);
+            
+            return false;
         }
+        
+        return true;
 	}
 	
 		
-	public void closeConnection() {
+	private void closeConnection() {
 		if(null != serialPort && serialPort.isOpened()) {
             try {
 				serialPort.closePort();
 				tcpClient.disconnectFromServer();
 			} catch (SerialPortException e) {
-				LOG.error("Error while closing serial port " + COM_PORT);
+				LOG.error("Error while closing serial port " + port);
 			}
 		}
 	}
 	
 	
-	public void setDTR() {
-		active = CONTROL_BIT.DTR;
-		
-		try {
-			serialPort.setRTS(false);
-			LOG.info("Setting DTR");
-		} catch (SerialPortException e) {
-			LOG.error("Error setting DTR", e);
+	private void startPortThread(Runnable run) {
+
+		Thread thread = new Thread(run);
+		thread.setPriority(Thread.NORM_PRIORITY);
+		thread.setName("Serial Port Control");
+		thread.start();
+	}
+
+	
+	private class DtrThread implements Runnable {
+		public void run() {
+
+			try {
+			
+				tcpClient.sendMessage("Activate DTR pulse");
+
+				// 2 pulses
+				for(int i = 0; i < 2; ++i) {
+										
+					serialPort.setDTR(true);
+					Thread.sleep(DTR_SLEEP);					
+					serialPort.setDTR(false);
+					Thread.sleep(DTR_SLEEP);
+				}
+				
+				tcpClient.sendMessage("Deactivate DTR pulse");
+				
+			} catch (InterruptedException e) {
+				LOG.error("Error DTR Pulse: couldn't send thread to sleep");
+			} catch (SerialPortException e) {
+				LOG.error("Error DTR Pulse: couldn't access serial port " + port);
+			} catch (NullPointerException e) {
+				LOG.error("Error: not connected to serial port " + port);	
+			}
 		}
-		
-		tcpClient.sendMessage("Set DTR");
 	}
 	
 	
-	public void setRTS() {
-		active = CONTROL_BIT.RTS;
-		
-		try {
-			serialPort.setDTR(false);
-			LOG.info("Setting RTS");
-		} catch (SerialPortException e) {
-			LOG.error("Error setting RTS", e);
+	private class RtsThread implements Runnable {
+		public void run() {
+
+			try {
+
+				tcpClient.sendMessage("Activate RTS pulse");
+			
+				// 2 pulses
+				for(int i = 0; i < 2; ++i) {					
+					serialPort.setRTS(true);
+					Thread.sleep(RTS_SLEEP);				
+					serialPort.setRTS(false);
+					Thread.sleep(RTS_SLEEP);
+				}
+				
+				tcpClient.sendMessage("Deactivate RTS pulse");
+				
+			} catch (InterruptedException e) {
+				LOG.error("Error RTS Pulse: couldn't send thread to sleep");
+			} catch (SerialPortException e) {
+				LOG.error("Error RTS Pulse: couldn't access serial port " + port);
+			} catch (NullPointerException e) {
+				LOG.error("Error: not connected to serial port " + port);	
+			}
 		}
-		
-		tcpClient.sendMessage("Set RTS");
+	}
+	
+	
+	private class sendDataThread implements Runnable {
+		public void run() {
+
+			try {
+				
+				tcpClient.sendMessage("Sending data (HC)");
+				
+				serialPort.writeString("M0");
+				serialPort.writeString("F0,0,100");	
+			
+				tcpClient.sendMessage("Sending done (HC)");
+				
+			} catch (SerialPortException e) {
+				LOG.error("Error sending data: couldn't access serial port " + port);
+			} catch (NullPointerException e) {
+				LOG.error("Error: not connected to serial port " + port);	
+			}
+		}
 	}
 }

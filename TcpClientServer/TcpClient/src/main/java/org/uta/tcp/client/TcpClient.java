@@ -11,13 +11,17 @@ import java.net.UnknownHostException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.uta.tcp.server.ServerUtil;
 
 
-public class TCPClient {
-	private static Logger LOG = LogManager.getLogger(TCPClient.class);
+public class TcpClient {
+	
+	private static final String SERVER_COMMAND_DTR = "DTR";
+	private static final String SERVER_COMMAND_RTS = "RTS";	
+	private static final String SERVER_COMMAND_HC = "HC";
+	
+	
+	private static Logger LOG = LogManager.getLogger(TcpClient.class);
 
-	private String serverAddress;
 	private Socket clientSocket;
 	private PrintWriter outToServer;
 	private boolean connected = false;
@@ -25,16 +29,13 @@ public class TCPClient {
 		
 	public boolean connectToServer() {
 		try {
-			InputStreamReader sr =new InputStreamReader(System.in);
-			BufferedReader br=new BufferedReader(sr);	
 			
-			System.out.println("Please type in the host address:");
-			serverAddress = br.readLine();
-	
-			System.out.println("Connecting to \"" + serverAddress + "\" ...");
-			clientSocket = new Socket(serverAddress,
-					ServerUtil.TCP_PORT);			
-			System.out.println("Connected");
+			LOG.info("Trying to connect to " + TcpUtil.SERVER_ADDRESS);
+
+			clientSocket = new Socket(TcpUtil.SERVER_ADDRESS,
+					TcpUtil.TCP_PORT);			
+
+			LOG.info("Connected to " + TcpUtil.SERVER_ADDRESS);
 			
 			outToServer = new PrintWriter(clientSocket.getOutputStream(),true);			
 
@@ -47,9 +48,9 @@ public class TCPClient {
 			
 			return true;
 		} catch (UnknownHostException e) {
-			LOG.error("Can't connect to " + serverAddress, e);
+			LOG.error("Can't connect to " + TcpUtil.SERVER_ADDRESS, e);
 		} catch (IOException e) {
-			LOG.error("Error: can't connect to \"" + serverAddress + "\"");
+			LOG.error("Error: can't connect to \"" + TcpUtil.SERVER_ADDRESS + "\"");
 		}
 		return false;
 	}
@@ -70,6 +71,8 @@ public class TCPClient {
 	
 	
 	public void sendMessage(String msg) {
+		LOG.info(msg);
+		
 		if(connected) {
 			outToServer.println(msg);
 		} else {
@@ -100,10 +103,12 @@ public class TCPClient {
 				while((clientData = inFromClient.readLine()) != null) {
 					LOG.info("Received from server - " + clientData);
 							
-					if("RTS".equals(clientData)) {
-						SerialPortController.setRtsActive();
-					} else if("DTR".equals(clientData)) {
-						SerialPortController.setDtrActive();
+					if(SERVER_COMMAND_RTS.equals(clientData)) {
+						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
+					} else if(SERVER_COMMAND_DTR.equals(clientData)) {
+						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+					} else if(SERVER_COMMAND_HC.equals(clientData)) {
+						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
 					}
 				}	
 

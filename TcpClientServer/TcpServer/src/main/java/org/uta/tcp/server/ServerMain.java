@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.uta.tcp.client.TcpUtil;
 
 public class ServerMain {
 	private static Logger LOG = LogManager.getLogger(ServerMain.class);
@@ -32,7 +33,8 @@ public class ServerMain {
 			System.out.println("Please select an option:");
 			System.out.println("1. RTS");
 			System.out.println("2. DTR");
-			System.out.println("3. End");
+			System.out.println("3. HC");
+			System.out.println("4. End");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
@@ -48,6 +50,9 @@ public class ServerMain {
 						sendCommandToClients("DTR");
 						break;
 					case 3: 
+						sendCommandToClients("HC");
+						break;
+					case 4: 
 						if(null != server) {
 							server.close();
 						}
@@ -84,7 +89,7 @@ public class ServerMain {
 		public void run() {
 
 			try {
-				server = new ServerSocket(ServerUtil.TCP_PORT);
+				server = new ServerSocket(TcpUtil.TCP_PORT);
 				
 				while (true) {
 					System.out.println("Waiting for clients...");
