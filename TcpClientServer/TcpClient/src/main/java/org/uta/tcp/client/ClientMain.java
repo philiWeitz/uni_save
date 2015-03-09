@@ -19,6 +19,8 @@ public class ClientMain {
 	
 	private static void mainMenu() {
 		
+		TcpClient.getInstance().connectToServer();
+		
 		while(true) {
 			System.out.println("Please select an option:");
 			System.out.println("1. RTS");
@@ -35,17 +37,21 @@ public class ClientMain {
 				switch(input) {
 					case 1: 
 						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
+						TcpClient.getInstance().sendMessage("RTS");						
 						break;
 					case 2: 
 						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+						TcpClient.getInstance().sendMessage("DTR");
 						break;
 					case 3: 
 						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
+						TcpClient.getInstance().sendMessage("HC");
 						break;						
 					case 4:
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
 						SerialPortController.closePortInstance(TcpUtil.rtsPort);
-						SerialPortController.closePortInstance(TcpUtil.dataPort);						
+						SerialPortController.closePortInstance(TcpUtil.dataPort);	
+						TcpClient.getInstance().disconnectFromServer();
 						return;
 					default: 
 						break;

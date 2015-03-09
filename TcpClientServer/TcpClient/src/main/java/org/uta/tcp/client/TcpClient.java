@@ -21,10 +21,26 @@ public class TcpClient {
 	
 	
 	private static Logger LOG = LogManager.getLogger(TcpClient.class);
-
+	private static TcpClient instance;
+	
+	
 	private Socket clientSocket;
 	private PrintWriter outToServer;
 	private boolean connected = false;
+	
+	
+	public static TcpClient getInstance() {
+		if(null == instance) {
+			instance = new TcpClient();
+		}
+		
+		return instance;
+	}
+	
+	
+	private TcpClient() {
+		
+	}
 	
 		
 	public boolean connectToServer() {
@@ -40,7 +56,7 @@ public class TcpClient {
 			outToServer = new PrintWriter(clientSocket.getOutputStream(),true);			
 
 			Thread thread = new Thread(new ServerListener(clientSocket));
-			thread.setPriority(Thread.NORM_PRIORITY);
+			thread.setPriority(Thread.MIN_PRIORITY);
 			thread.setName("TCP Server read");
 			thread.start();
 			

@@ -12,6 +12,7 @@
 		<gson.version>2.3.1</gson.version>
 		<jssc.version>2.8.0</jssc.version>
 		<log4j.version>2.0-rc1</log4j.version>
+		<junit.version>4.12</junit.version>
 		<commons.lang.version>3.3.2</commons.lang.version>
 	</properties>
 
@@ -83,6 +84,13 @@
 				<artifactId>log4j-core</artifactId>
 				<version>${log4j.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+
 
 		</dependencies>
 	</dependencyManagement>

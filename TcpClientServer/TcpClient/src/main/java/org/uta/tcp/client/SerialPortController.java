@@ -2,10 +2,13 @@ package org.uta.tcp.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,16 +62,24 @@ public class SerialPortController {
 	
 	
 	/*********************************************************************************************/	
-	
-	
+
 	
 	private PORT port;
-	private TcpClient tcpClient;
 	private SerialPort serialPort;
 	
-
+	private ExecutorService executor;
+	
+	
 	private SerialPortController(PORT port) {
 		this.port = port;
+			
+		 BasicThreadFactory factory = new BasicThreadFactory.Builder()
+	     	.namingPattern("Serial Port")
+	     	.daemon(true)
+	     	.priority(Thread.MIN_PRIORITY)
+	     	.build();
+		 
+		executor = Executors.newCachedThreadPool(factory);
 	}
 	
 		
@@ -88,10 +99,8 @@ public class SerialPortController {
 	
 	
 	private boolean connectToSerialPort() {		
-		tcpClient = new TcpClient();
-		tcpClient.connectToServer();
-		
-        serialPort = new SerialPort(port.toString());
+
+		serialPort = new SerialPort(port.toString());
         
         try {
             serialPort.openPort();
@@ -117,7 +126,6 @@ public class SerialPortController {
 		if(null != serialPort && serialPort.isOpened()) {
             try {
 				serialPort.closePort();
-				tcpClient.disconnectFromServer();
 			} catch (SerialPortException e) {
 				LOG.error("Error while closing serial port " + port);
 			}
@@ -127,8 +135,10 @@ public class SerialPortController {
 	
 	private void startPortThread(Runnable run) {
 
+		executor.execute(run);
+		
 		Thread thread = new Thread(run);
-		thread.setPriority(Thread.NORM_PRIORITY);
+		thread.setPriority(Thread.MIN_PRIORITY);
 		thread.setName("Serial Port Control");
 		thread.start();
 	}
@@ -138,8 +148,6 @@ public class SerialPortController {
 		public void run() {
 
 			try {
-			
-				tcpClient.sendMessage("Activate DTR pulse");
 
 				// 2 pulses
 				for(int i = 0; i < 2; ++i) {
@@ -149,8 +157,6 @@ public class SerialPortController {
 					serialPort.setDTR(false);
 					Thread.sleep(DTR_SLEEP);
 				}
-				
-				tcpClient.sendMessage("Deactivate DTR pulse");
 				
 			} catch (InterruptedException e) {
 				LOG.error("Error DTR Pulse: couldn't send thread to sleep");
@@ -168,8 +174,6 @@ public class SerialPortController {
 
 			try {
 
-				tcpClient.sendMessage("Activate RTS pulse");
-			
 				// 2 pulses
 				for(int i = 0; i < 2; ++i) {					
 					serialPort.setRTS(true);
@@ -177,8 +181,6 @@ public class SerialPortController {
 					serialPort.setRTS(false);
 					Thread.sleep(RTS_SLEEP);
 				}
-				
-				tcpClient.sendMessage("Deactivate RTS pulse");
 				
 			} catch (InterruptedException e) {
 				LOG.error("Error RTS Pulse: couldn't send thread to sleep");
@@ -195,14 +197,10 @@ public class SerialPortController {
 		public void run() {
 
 			try {
-				
-				tcpClient.sendMessage("Sending data (HC)");
-				
+
 				serialPort.writeString("M0");
 				serialPort.writeString("F0,0,100");	
-			
-				tcpClient.sendMessage("Sending done (HC)");
-				
+
 			} catch (SerialPortException e) {
 				LOG.error("Error sending data: couldn't access serial port " + port);
 			} catch (NullPointerException e) {
