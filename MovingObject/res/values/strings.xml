@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pathfinder</string>
+    
+    <string name="main_activity_motion_deactive">Start Motion</string>    
+	<string name="main_activity_motion_active">Stop Motion</string>
+	<string name="main_activity_drawing_active">Stop Drawing</string>	
+	<string name="main_activity_drawing_deactive">Start Drawing</string>	
+	<string name="main_activity_place_pointer">Place Pointer</string>			
+	
+    
+</resources>
