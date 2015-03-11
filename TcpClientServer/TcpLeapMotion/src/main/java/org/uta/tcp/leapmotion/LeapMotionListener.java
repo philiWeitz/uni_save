@@ -16,7 +16,7 @@ import com.leapmotion.leap.Listener;
 
 public class LeapMotionListener extends Listener {
 
-	private static final long GESTURE_TIME_OUT = 100;
+	private static final long GESTURE_TIME_OUT = 300;
 
 	private long lastGestureTime = 0;
 
@@ -32,11 +32,11 @@ public class LeapMotionListener extends Listener {
 		controller.setPolicy(Controller.PolicyFlag.POLICY_IMAGES);
 		controller.setPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
 
-		controller.config().setFloat("Gesture.Circle.MinRadius", 40f);
-		controller.config().setFloat("Gesture.Circle.MinArc", (float) (Math.PI * 0.5));
+		controller.config().setFloat("Gesture.Circle.MinRadius", 30f);
+		controller.config().setFloat("Gesture.Circle.MinArc", (float) (Math.PI * 1.3));
 		
 		controller.config().setFloat("Gesture.Swipe.MinLength", 150f);
-		controller.config().setFloat("Gesture.Swipe.MinVelocity", 1000f);
+		controller.config().setFloat("Gesture.Swipe.MinVelocity", 100f);
 		
 		controller.config().save();
 	}
@@ -51,9 +51,8 @@ public class LeapMotionListener extends Listener {
 			
 			for (Gesture g : frame.gestures()) {
 
-				// screen tap gesture only states STATE_STOP
-				if (g.state() == State.STATE_START 
-						|| g.type() == Type.TYPE_SCREEN_TAP && g.state() == State.STATE_STOP) {
+				// screen tap gesture only triggers STATE_STOP
+				if (g.state() == State.STATE_START || g.type() == Type.TYPE_SCREEN_TAP) {
 
 					switch (g.type()) {
 						case TYPE_SWIPE:
@@ -81,8 +80,8 @@ public class LeapMotionListener extends Listener {
 	
 	private void circularGesture(Gesture g) {
 		CircleGesture circle = new CircleGesture(g);
-
-		if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI / 4) {
+		
+		if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI / 2) {
 
 			SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 			TcpClient.getInstance().sendMessage("Gesture: Focus Right");
@@ -96,13 +95,12 @@ public class LeapMotionListener extends Listener {
 	
 	
 	private void swipeGesture(Gesture g) {
-		SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+		SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
 		TcpClient.getInstance().sendMessage("Gesture: Omni-Direction Swipe");
 	}
 	
 	
 	private void screenTapGesture(Gesture g) {
 		System.out.println("Screen Tap");
-	}	
-	
+	}		
 }
