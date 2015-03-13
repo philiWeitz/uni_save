@@ -1,0 +1,15 @@
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\bin\Debug\MoveObjectWpf.exe.config
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.csprojResolveAssemblyReference.cache
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MainWindow.baml
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MainWindow.g.cs
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\App.g.cs
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf_MarkupCompile.cache
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.g.resources
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.Properties.Resources.resources
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.csproj.GenerateResource.Cache
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\bin\Debug\MoveObjectWpf.exe
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\bin\Debug\MoveObjectWpf.pdb
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.exe
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\MoveObjectWpf.pdb
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\Pages\DrawingPage.baml
+C:\Users\Phil\workspace_luna\uni_save\MoveObjectWpf\MoveObjectWpf\obj\Debug\Pages\DrawingPage.g.cs

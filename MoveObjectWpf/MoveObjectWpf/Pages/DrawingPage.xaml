@@ -1,0 +1,17 @@
+﻿<Page x:Class="MoveObjectWpf.Views.DrawingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      Width="Auto"
+      Height="Auto"
+      MinHeight="100"
+	Title="Page1">
+
+    <Grid>
+        <ToggleButton Name="motionControlButton"  IsChecked="False" Content="Start Motion" HorizontalAlignment="Left" Margin="10" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="motionControlButton_Checked" Unchecked="motionControlButton_Unchecked" />
+        <ToggleButton Name="drawingControlButton" IsChecked="False" Content="Start Drawing" HorizontalAlignment="Left" Margin="100,10,10,10" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="drawingControlButton_Checked" Unchecked="drawingControlButton_Unchecked" />
+        <InkCanvas Name="drawingCanvas" IsEnabled="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,50,10,10" Background="Beige" />
+    </Grid>
+</Page>
