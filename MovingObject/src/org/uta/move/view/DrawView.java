@@ -2,6 +2,12 @@ package org.uta.move.view;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.uta.move.stickslip.StickSlipControl;
+import org.uta.move.stickslip.Vector2D;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,16 +17,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class DrawView extends View {
 		
+	private StickSlipControl stickSlipControl;
+	private Vector2D lastTouchCoordinates;
+
+	private ScheduledExecutorService scheduler;
+	
 	private boolean drawingActive = false;
 	private boolean motionActive = false;	
-	
-	private Pair<Float, Float> lastTouchCoordinates;
 	
 	private Path drawPath;
 	private Paint drawPaint;
@@ -30,7 +38,7 @@ public class DrawView extends View {
 	
 	private Paint whitePaint;
 	
-	private List<Pair<Float, Float>> pathList = new LinkedList<Pair<Float,Float>>();
+	private List<Vector2D> pathList = new LinkedList<Vector2D>();
 	
 	
 	public DrawView(Context context, AttributeSet attrs) {
@@ -40,7 +48,7 @@ public class DrawView extends View {
 	}
 	
 	
-	public List<Pair<Float, Float>> getPath() {
+	public List<Vector2D> getPath() {
 		return pathList;
 	}
 	
@@ -48,13 +56,30 @@ public class DrawView extends View {
 	public void setDrawingActive(boolean active) {
 		motionActive = false;
 		drawingActive = active;
+		
+		if(null != scheduler) {
+			scheduler.shutdownNow();
+			scheduler = null;
+		}
 	}
 	
 	
 	public void setMotionActive(boolean active) {
 		drawingActive = false;
 		motionActive = active;
-	}	
+		
+		if(null != scheduler) {
+			scheduler.shutdownNow();
+			scheduler = null;
+		}
+		
+		if(active) {
+			scheduler = Executors.newSingleThreadScheduledExecutor();
+			scheduler.scheduleWithFixedDelay(coordinateUpdater, 0, 1, TimeUnit.MILLISECONDS);
+		} else {
+			invalidate();
+		}
+	}
 	
 	
 	private void init(){
@@ -70,9 +95,11 @@ public class DrawView extends View {
 			
 		whitePaint = new Paint(drawPaint);
 		whitePaint.setColor(Color.WHITE);
-		whitePaint.setStrokeWidth(6);
+		whitePaint.setStrokeWidth(4);
 	
 		canvasPaint = new Paint(Paint.DITHER_FLAG);	
+		
+		stickSlipControl = new StickSlipControl();
 	}
 	
 	
@@ -100,23 +127,34 @@ public class DrawView extends View {
 	@SuppressLint("ClickableViewAccessibility")
 	public boolean onTouchEvent(MotionEvent event) {
 		
+		// draw current position
 		if(null != lastTouchCoordinates) {
-			drawCanvas.drawPoint(lastTouchCoordinates.first, lastTouchCoordinates.second, whitePaint);
+			drawCanvas.drawPoint(lastTouchCoordinates.getX(), lastTouchCoordinates.getY(), whitePaint);
 		}
 		
-		lastTouchCoordinates = 
-				new Pair<Float, Float>(event.getX(), event.getY());
-		
+		lastTouchCoordinates = new Vector2D(event.getX(), event.getY());
 		drawCanvas.drawPoint(event.getX(), event.getY(), drawPaint);
 		
+		// perform the active action
 		if(drawingActive) {
 			drawPath(event);
 		} else if(motionActive) {
-			
+			moveObject();
 		}
 		
 		invalidate();
 		return true;
+	}
+	
+	
+	private void moveObject() {
+		if(!pathList.isEmpty() && lastTouchCoordinates.distance(pathList.get(0)) < 5) {
+			pathList.remove(0);
+		}	
+		
+		if(!pathList.isEmpty()) {
+			stickSlipControl.updateActuator(lastTouchCoordinates, pathList.get(0));
+		}
 	}
 	
 	
@@ -131,12 +169,13 @@ public class DrawView extends View {
 				drawCanvas.drawColor(Color.WHITE);
 				// clear old path
 				pathList.clear();
+				pathList.add(new Vector2D(touchX, touchY));
 				// start drawing
 			    drawPath.moveTo(touchX, touchY);
 			    break;
 			    
 			case MotionEvent.ACTION_MOVE:
-				pathList.add(new Pair<Float, Float>(touchX, touchY));
+				pathList.add(new Vector2D(touchX, touchY));
 			    drawPath.lineTo(touchX, touchY);
 			    break;
 			    
@@ -149,4 +188,24 @@ public class DrawView extends View {
 				break;
 		}
 	}
+	
+	
+	// only for debugging purpose
+	private Runnable coordinateUpdater = new Runnable() {		
+		@Override
+		public void run() {
+			
+			if(!pathList.isEmpty()) {
+				// draw current position
+				if(null != lastTouchCoordinates) {
+					drawCanvas.drawPoint(lastTouchCoordinates.getX(), lastTouchCoordinates.getY(), whitePaint);
+				}
+				
+				lastTouchCoordinates = lastTouchCoordinates.add(stickSlipControl.getNextPosition());
+				drawCanvas.drawPoint(lastTouchCoordinates.getX(), lastTouchCoordinates.getY(), drawPaint);
+	
+				moveObject();
+			}
+		}
+	};
 }
