@@ -56,6 +56,8 @@
     <Compile Include="Pages\DrawingPage.xaml.cs">
       <DependentUpon>DrawingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StickSlip\PointUtil.cs" />
+    <Compile Include="StickSlip\SerialPortUtil.cs" />
     <Compile Include="StickSlip\StickSlipControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
