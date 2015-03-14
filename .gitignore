@@ -16,8 +16,11 @@ target
 *.log
 
 # Android
-libs
+android-support-v4.jar
 
 # visual studio
 packages
 obj
+
+# exceptions
+!FTD2XX_NET.dll
