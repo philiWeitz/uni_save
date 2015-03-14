@@ -1,20 +1,17 @@
-﻿
-
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using MoveObjectWpf.Views;
+
 namespace MoveObjectWpf.StickSlip
 {
     internal class StickSlipControl
     {
-        private DrawingPage parent;
-
+        private readonly DrawingPage parent;
 
         public StickSlipControl(DrawingPage parent)
         {
             this.parent = parent;
         }
-
 
         public void adjustActuation(Point currentPosition, Point destination)
         {
@@ -79,9 +76,6 @@ namespace MoveObjectWpf.StickSlip
             setActuatorColorToTransparent();
         }
 
-
-
-
         // debug output function
         private void setActuatorColor(Actuator actuator)
         {
@@ -90,18 +84,20 @@ namespace MoveObjectWpf.StickSlip
                 case Actuator.Top:
                     parent.actuatorTop.Fill = Brushes.Red;
                     break;
+
                 case Actuator.Bottom:
                     parent.actuatorBottom.Fill = Brushes.Red;
                     break;
+
                 case Actuator.Left:
                     parent.actuatorLeft.Fill = Brushes.Red;
                     break;
+
                 case Actuator.Right:
                     parent.actuatorRight.Fill = Brushes.Red;
                     break;
             }
         }
-
 
         // debug function
         private void setActuatorColorToTransparent()

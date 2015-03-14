@@ -17,3 +17,7 @@ target
 
 # Android
 libs
+
+# visual studio
+packages
+obj

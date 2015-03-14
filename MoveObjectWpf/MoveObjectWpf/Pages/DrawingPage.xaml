@@ -13,12 +13,11 @@
         <ToggleButton Name="drawingControlButton" IsChecked="False" Content="Start Drawing" HorizontalAlignment="Left" Margin="10,10,0,0" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="drawingControlButton_Checked" Unchecked="drawingControlButton_Unchecked" />
         <InkCanvas Name="drawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,70,20,20" Background="Beige" />
         <Rectangle Name="canvasOverlay"  Visibility="Visible" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,70,20,20" MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" />
-        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Stretch" Margin="110,16,10,10" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="Auto"/>
+        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Stretch" Margin="110,16,10,10" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="Auto" />
 
-        <Ellipse Name="actuatorLeft" Fill="Transparent" HorizontalAlignment="Left" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10"/>
-        <Ellipse Name="actuatorRight" Fill="Transparent" HorizontalAlignment="Right" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10"/>
-        <Ellipse Name="actuatorTop" Fill="Transparent" HorizontalAlignment="Center" Height="10" Margin="0,50,0,5" VerticalAlignment="Top" Width="10"/>
-        <Ellipse Name="actuatorBottom" Fill="Transparent" HorizontalAlignment="Center" Height="10" Margin="0,0,0,5" VerticalAlignment="Bottom" Width="10"/>
-
+        <Ellipse Name="actuatorLeft" Fill="Transparent" HorizontalAlignment="Left" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
+        <Ellipse Name="actuatorRight" Fill="Transparent" HorizontalAlignment="Right" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
+        <Ellipse Name="actuatorTop" Fill="Transparent" HorizontalAlignment="Center" Height="10" Margin="0,50,0,5" VerticalAlignment="Top" Width="10" />
+        <Ellipse Name="actuatorBottom" Fill="Transparent" HorizontalAlignment="Center" Height="10" Margin="0,0,0,5" VerticalAlignment="Bottom" Width="10" />
     </Grid>
 </Page>

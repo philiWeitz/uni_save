@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
 using System.Windows.Input;
+using MoveObjectWpf.Properties;
 using MoveObjectWpf.StickSlip;
 
 namespace MoveObjectWpf.Views
@@ -12,7 +13,7 @@ namespace MoveObjectWpf.Views
     /// </summary>
     public partial class DrawingPage : Page
     {
-        private const int MIN_DISTANCE = 10; 
+        private static readonly int MIN_DISTANCE = int.Parse(Resource.MIN_PIXEL_DISTANCY);
 
         private StickSlipControl stickSlipControl;
         private IEnumerator stylusEnumerator = null;
@@ -55,8 +56,6 @@ namespace MoveObjectWpf.Views
         {
             // stop actuation
             stickSlipControl.stopActuation();
-            // set the enumerator back to null;
-            stylusEnumerator = null;
         }
 
         private void canvasOverlay_MouseDownEvent(object sender, MouseButtonEventArgs e)
@@ -68,7 +67,7 @@ namespace MoveObjectWpf.Views
         private void canvasOverlay_MouseMove(object sender, MouseEventArgs e)
         {
             Point cursorPosition = e.GetPosition(canvasOverlay);
-            onMouseMove(cursorPosition);            
+            onMouseMove(cursorPosition);
         }
 
         private void setStylusEnumerator()
