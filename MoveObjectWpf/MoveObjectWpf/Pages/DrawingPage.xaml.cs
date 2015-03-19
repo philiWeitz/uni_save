@@ -52,27 +52,9 @@ namespace MoveObjectWpf.Views
             setStylusEnumerator();
         }
 
-        private void canvasOverlay_MouseUpEvent(object sender, MouseButtonEventArgs e)
-        {
-            // stop actuation
-            stickSlipControl.stopActuation();
-        }
-
-        private void canvasOverlay_MouseDownEvent(object sender, MouseButtonEventArgs e)
-        {
-            Point cursorPosition = e.GetPosition(canvasOverlay);
-            onMouseMove(cursorPosition);
-        }
-
-        private void canvasOverlay_MouseMove(object sender, MouseEventArgs e)
-        {
-            Point cursorPosition = e.GetPosition(canvasOverlay);
-            onMouseMove(cursorPosition);
-        }
-
         private void setStylusEnumerator()
         {
-            if (drawingCanvas.Strokes.Count > 0)
+            if (null == stylusEnumerator && drawingCanvas.Strokes.Count > 0)
             {
                 // get the first stroke
                 IEnumerator strokeEnumerator = drawingCanvas.Strokes.GetEnumerator();
@@ -116,6 +98,107 @@ namespace MoveObjectWpf.Views
 
                 stickSlipControl.adjustActuation(cursorPosition, destination);
             }
+        }
+
+
+        /************** touch screen events ***************************/
+
+        private void canvasOverlay_TouchLeave(object sender, TouchEventArgs e)
+        {
+            // stop actuation
+            stickSlipControl.stopActuation();
+        }
+
+        private void canvasOverlay_TouchUp(object sender, TouchEventArgs e)
+        {
+            // stop actuation
+            stickSlipControl.stopActuation();
+        }
+
+        private void canvasOverlay_TouchMove(object sender, TouchEventArgs e)
+        {
+            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            onMouseMove(cursorPosition);
+        }
+
+        private void canvasOverlay_TouchEnter(object sender, TouchEventArgs e)
+        {
+            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            onMouseMove(cursorPosition);
+        }
+
+        private void canvasOverlay_TouchDown(object sender, TouchEventArgs e)
+        {
+            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            onMouseMove(cursorPosition);
+        }
+
+
+        /************** stylus events ***************************/
+
+        private void canvasOverlay_StylusLeave(object sender, StylusEventArgs e)
+        {
+            // stop actuation
+            stickSlipControl.stopActuation();
+        }
+
+        private void canvasOverlay_StylusUp(object sender, StylusEventArgs e)
+        {
+            // stop actuation
+            stickSlipControl.stopActuation();
+        }
+
+        private void canvasOverlay_StylusMove(object sender, StylusEventArgs e)
+        {
+            Point cursorPosition = e.GetPosition(canvasOverlay);
+            onMouseMove(cursorPosition);
+        }
+
+        private void canvasOverlay_StylusDown(object sender, StylusDownEventArgs e)
+        {
+            Point cursorPosition = e.GetPosition(canvasOverlay);
+            onMouseMove(cursorPosition);
+        }
+
+        private void canvasOverlay_StylusEnter(object sender, StylusEventArgs e)
+        {
+            Point cursorPosition = e.GetPosition(canvasOverlay);
+            onMouseMove(cursorPosition);
+        }
+
+
+        /************** mouse events for debug purpose ***************************/
+
+        private void canvasOverlay_MouseUpEvent(object sender, MouseButtonEventArgs e)
+        {
+            #if DEBUG
+                // stop actuation
+                stickSlipControl.stopActuation();
+            #endif
+        }
+
+        private void canvasOverlay_MouseLeave(object sender, MouseEventArgs e)
+        {
+            #if DEBUG
+                // stop actuation
+                stickSlipControl.stopActuation();
+            #endif
+        }
+
+        private void canvasOverlay_MouseDownEvent(object sender, MouseButtonEventArgs e)
+        {
+            #if DEBUG
+                Point cursorPosition = e.GetPosition(canvasOverlay);
+                onMouseMove(cursorPosition);
+            #endif
+        }
+
+        private void canvasOverlay_MouseMove(object sender, MouseEventArgs e)
+        {
+            #if DEBUG
+                Point cursorPosition = e.GetPosition(canvasOverlay);
+                onMouseMove(cursorPosition);
+            #endif
         }
     }
 }

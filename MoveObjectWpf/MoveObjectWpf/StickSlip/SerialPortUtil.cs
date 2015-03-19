@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using FTD2XX_NET;
 using log4net;
@@ -17,11 +18,19 @@ namespace MoveObjectWpf.StickSlip
 
     internal class SerialPortUtil
     {
+        private static readonly int PEAK_TIME_IN_MS = int.Parse(Resource.PEAK_TIME_IN_MS);
+        private static readonly int AVERAGE_TIME_IN_MS = int.Parse(Resource.AVERAGE_TIME_IN_MS);
+
         private static readonly ILog logger = LogManager.GetLogger(typeof(SerialPortUtil));
+
         private static SerialPortUtil instance;
 
+        private static bool running = true;
+        private static byte toWrite = 0x0;
+
         private FTDI device;
-        private byte lastBitsWritten = 0xff;
+        private readonly Thread updateThread;
+        
 
         public static SerialPortUtil getInstance()
         {
@@ -34,6 +43,9 @@ namespace MoveObjectWpf.StickSlip
 
         private SerialPortUtil()
         {
+            updateThread = new Thread(new ThreadStart(ControllerUpdate));
+            updateThread.IsBackground = true;
+            updateThread.Start();
         }
 
         ~SerialPortUtil()
@@ -42,6 +54,22 @@ namespace MoveObjectWpf.StickSlip
             {
                 device.Close();
             }
+
+            running = false;
+            updateThread.Abort();
+            updateThread.Join();
+        }
+
+        public void actuate(params Actuator[] actuators)
+        {
+            byte value = 0;
+
+            foreach (Actuator actuator in actuators)
+            {
+                value |= (byte)actuator;
+            }
+
+            toWrite = value;
         }
 
         private FTDI getFtdiDevice()
@@ -93,37 +121,36 @@ namespace MoveObjectWpf.StickSlip
             return device;
         }
 
-        public void actuate(params Actuator[] actuators)
+        private void ControllerUpdate()
         {
-            byte value = 0;
-
-            foreach (Actuator actuator in actuators)
+            while (running)
             {
-                value |= (byte)actuator;
-            }
-
-            try
-            {
-                if (value != lastBitsWritten)
+                if (toWrite > 0)
                 {
+                    byte writeToController = toWrite;
                     uint bytesWritten = 0;
 
-                    // write bits to FTDI device
-                    getFtdiDevice().Write(new byte[] { value }, 1, ref bytesWritten);
+                    // start with peak voltage for 1s (110000B | toWrite)
+                    writeToController |= 0xC0;
+                    getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
+                    logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
+                    Thread.Sleep(PEAK_TIME_IN_MS);
 
-                    if (bytesWritten == 1)
-                    {
-                        lastBitsWritten = value;
-                    }
-                    else
+                    // start with peak voltage for 1s (100000B | toWrite)
+                    writeToController ^= 0x40;
+                    getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
+                    logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
+                    Thread.Sleep(AVERAGE_TIME_IN_MS);
+
+                    if (bytesWritten != 1)
                     {
                         logger.Error("Couldn't write bytes to FTDI device");
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                logger.Error("Couldn't write bytes to FTDI device", e);
+                else
+                {
+                    Thread.Sleep(AVERAGE_TIME_IN_MS + PEAK_TIME_IN_MS);
+                }
             }
         }
     }

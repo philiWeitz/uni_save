@@ -21,6 +21,8 @@ android-support-v4.jar
 # visual studio
 packages
 obj
+*.csproj
+*.csproj.user
 
 # exceptions
 !FTD2XX_NET.dll

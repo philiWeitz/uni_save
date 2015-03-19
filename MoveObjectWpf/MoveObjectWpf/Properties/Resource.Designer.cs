@@ -61,6 +61,15 @@ namespace MoveObjectWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 400.
+        /// </summary>
+        internal static string AVERAGE_TIME_IN_MS {
+            get {
+                return ResourceManager.GetString("AVERAGE_TIME_IN_MS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 9600.
         /// </summary>
         internal static string BOUD_RATE {
@@ -75,6 +84,15 @@ namespace MoveObjectWpf.Properties {
         internal static string MIN_PIXEL_DISTANCY {
             get {
                 return ResourceManager.GetString("MIN_PIXEL_DISTANCY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100.
+        /// </summary>
+        internal static string PEAK_TIME_IN_MS {
+            get {
+                return ResourceManager.GetString("PEAK_TIME_IN_MS", resourceCulture);
             }
         }
     }
