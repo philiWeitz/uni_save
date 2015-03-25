@@ -4,9 +4,14 @@ using MoveObjectWpf.Views;
 
 namespace MoveObjectWpf.StickSlip
 {
-    internal class StickSlipControl
+    public class StickSlipControl
     {
         private readonly DrawingPage parent;
+
+        public StickSlipControl()
+        {
+            this.parent = null;
+        }
 
         public StickSlipControl(DrawingPage parent)
         {
@@ -79,33 +84,38 @@ namespace MoveObjectWpf.StickSlip
         // debug output function
         private void setActuatorColor(Actuator actuator)
         {
-            switch (actuator)
-            {
-                case Actuator.Top:
-                    parent.actuatorTop.Fill = Brushes.Red;
-                    break;
+            if (null != parent) { 
+                switch (actuator)
+                {
+                    case Actuator.Top:
+                        parent.actuatorTop.Fill = Brushes.Red;
+                        break;
 
-                case Actuator.Bottom:
-                    parent.actuatorBottom.Fill = Brushes.Red;
-                    break;
+                    case Actuator.Bottom:
+                        parent.actuatorBottom.Fill = Brushes.Red;
+                        break;
 
-                case Actuator.Left:
-                    parent.actuatorLeft.Fill = Brushes.Red;
-                    break;
+                    case Actuator.Left:
+                        parent.actuatorLeft.Fill = Brushes.Red;
+                        break;
 
-                case Actuator.Right:
-                    parent.actuatorRight.Fill = Brushes.Red;
-                    break;
-            }
+                    case Actuator.Right:
+                        parent.actuatorRight.Fill = Brushes.Red;
+                        break;
+                }
+            }    
         }
 
         // debug function
         private void setActuatorColorToTransparent()
         {
-            parent.actuatorBottom.Fill = Brushes.Transparent;
-            parent.actuatorLeft.Fill = Brushes.Transparent;
-            parent.actuatorRight.Fill = Brushes.Transparent;
-            parent.actuatorTop.Fill = Brushes.Transparent;
+            if (null != parent)
+            {
+                parent.actuatorBottom.Fill = Brushes.Transparent;
+                parent.actuatorLeft.Fill = Brushes.Transparent;
+                parent.actuatorRight.Fill = Brushes.Transparent;
+                parent.actuatorTop.Fill = Brushes.Transparent;
+            }
         }
     }
 }

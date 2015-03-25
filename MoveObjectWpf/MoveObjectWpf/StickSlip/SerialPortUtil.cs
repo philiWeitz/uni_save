@@ -16,7 +16,7 @@ namespace MoveObjectWpf.StickSlip
         Right = 1 << 3
     }
 
-    internal class SerialPortUtil
+    public class SerialPortUtil
     {
         private static readonly int PEAK_TIME_IN_MS = int.Parse(Resource.PEAK_TIME_IN_MS);
         private static readonly int AVERAGE_TIME_IN_MS = int.Parse(Resource.AVERAGE_TIME_IN_MS);
