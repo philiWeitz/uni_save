@@ -16,7 +16,7 @@ namespace MoveObjectWpf.StickSlip
         Right = 1 << 0
     }
 
-    internal class SerialPortUtil
+    public class SerialPortUtil
     {
         public static int PEAK_TIME_IN_MS { get; set; }
         public static int ON_TIME_IN_MS { get; set; }

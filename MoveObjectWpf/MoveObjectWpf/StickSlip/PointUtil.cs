@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace MoveObjectWpf.StickSlip
 {
-    internal static class PointUtil
+    public static class PointUtil
     {
         public static double getDistance(Point point1, Point point2)
         {
