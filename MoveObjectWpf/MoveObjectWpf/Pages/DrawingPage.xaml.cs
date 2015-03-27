@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define DEBUG
+
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
@@ -27,6 +29,9 @@ namespace MoveObjectWpf.Views
         private void initUI()
         {
             stickSlipControl = new StickSlipControl(this);
+            sliderOn.Value = double.Parse(Resource.ON_TIME_IN_MS);
+            sliderOff.Value = double.Parse(Resource.OFF_TIME_IN_MS);
+            sliderPeak.Value = double.Parse(Resource.PEAK_TIME_IN_MS);
 
             drawingCanvas.AddHandler(InkCanvas.MouseDownEvent, new MouseButtonEventHandler(InkCanvas_MouseDown), true);
         }
@@ -199,6 +204,24 @@ namespace MoveObjectWpf.Views
                 Point cursorPosition = e.GetPosition(canvasOverlay);
                 onMouseMove(cursorPosition);
             #endif
+        }
+
+        private void sliderPeak_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelPeak.Content = "Peak (" + sliderPeak.Value + ")";
+            SerialPortUtil.PEAK_TIME_IN_MS = (int) sliderPeak.Value;
+        }
+
+        private void sliderOn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelOn.Content = "On (" + sliderOn.Value + ")";
+            SerialPortUtil.ON_TIME_IN_MS = (int)sliderOn.Value;
+        }
+
+        private void sliderOff_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelOff.Content = "Off (" + sliderOff.Value + ")";
+            SerialPortUtil.OFF_TIME_IN_MS = (int)sliderOff.Value;
         }
     }
 }

@@ -10,16 +10,17 @@ namespace MoveObjectWpf.StickSlip
     public enum Actuator
     {
         None = 0,
-        Top = 1 << 0,
+        Top = 1 << 2,
         Bottom = 1 << 1,
-        Left = 1 << 2,
-        Right = 1 << 3
+        Left = 1 << 3,
+        Right = 1 << 0
     }
 
     internal class SerialPortUtil
     {
-        private static readonly int PEAK_TIME_IN_MS = int.Parse(Resource.PEAK_TIME_IN_MS);
-        private static readonly int AVERAGE_TIME_IN_MS = int.Parse(Resource.AVERAGE_TIME_IN_MS);
+        public static int PEAK_TIME_IN_MS { get; set; }
+        public static int ON_TIME_IN_MS { get; set; }
+        public static int OFF_TIME_IN_MS { get; set; }
 
         private static readonly ILog logger = LogManager.GetLogger(typeof(SerialPortUtil));
 
@@ -41,10 +42,19 @@ namespace MoveObjectWpf.StickSlip
             return instance;
         }
 
+
+        /****************************************************************************************************/
+
+
         private SerialPortUtil()
         {
+            PEAK_TIME_IN_MS = int.Parse(Resource.PEAK_TIME_IN_MS);
+            ON_TIME_IN_MS = int.Parse(Resource.ON_TIME_IN_MS);
+            OFF_TIME_IN_MS = int.Parse(Resource.OFF_TIME_IN_MS);
+
             updateThread = new Thread(new ThreadStart(ControllerUpdate));
-            updateThread.IsBackground = true;
+            //updateThread.IsBackground = true;
+            //updateThread.Priority = ThreadPriority.Highest;
             updateThread.Start();
         }
 
@@ -130,17 +140,22 @@ namespace MoveObjectWpf.StickSlip
                     byte writeToController = toWrite;
                     uint bytesWritten = 0;
 
-                    // start with peak voltage for 1s (110000B | toWrite)
-                    writeToController |= 0xC0;
+                    // start with peak voltage for x seconds (100000B | toWrite)
+                    writeToController |= 0x80;
                     getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
-                    logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
+                    //logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
                     Thread.Sleep(PEAK_TIME_IN_MS);
 
-                    // start with peak voltage for 1s (100000B | toWrite)
-                    writeToController ^= 0x40;
+                    // start with peak voltage for x seconds (000000B | toWrite)
+                    writeToController ^= 0x80;
                     getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
-                    logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
-                    Thread.Sleep(AVERAGE_TIME_IN_MS);
+                    //logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
+                    Thread.Sleep(ON_TIME_IN_MS);
+
+                    // stop for x seconds
+                    getFtdiDevice().Write(new byte[] { 0x0 }, 1, ref bytesWritten);
+                    //logger.Debug("Sending " + Convert.ToString(0x0, 2).PadLeft(8, '0'));
+                    Thread.Sleep(OFF_TIME_IN_MS);
 
                     if (bytesWritten != 1)
                     {
@@ -149,7 +164,7 @@ namespace MoveObjectWpf.StickSlip
                 }
                 else
                 {
-                    Thread.Sleep(AVERAGE_TIME_IN_MS + PEAK_TIME_IN_MS);
+                    Thread.Sleep(ON_TIME_IN_MS + PEAK_TIME_IN_MS);
                 }
             }
         }
