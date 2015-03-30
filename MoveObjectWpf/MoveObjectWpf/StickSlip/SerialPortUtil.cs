@@ -4,6 +4,9 @@ using System.Windows;
 using FTD2XX_NET;
 using log4net;
 using MoveObjectWpf.Properties;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MoveObjectWpf.StickSlip
 {
@@ -22,7 +25,7 @@ namespace MoveObjectWpf.StickSlip
         public static int ON_TIME_IN_MS { get; set; }
         public static int OFF_TIME_IN_MS { get; set; }
 
-        private static readonly ILog logger = LogManager.GetLogger(typeof(SerialPortUtil));
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static SerialPortUtil instance;
 
@@ -53,8 +56,8 @@ namespace MoveObjectWpf.StickSlip
             OFF_TIME_IN_MS = int.Parse(Resource.OFF_TIME_IN_MS);
 
             updateThread = new Thread(new ThreadStart(ControllerUpdate));
-            //updateThread.IsBackground = true;
-            //updateThread.Priority = ThreadPriority.Highest;
+            updateThread.IsBackground = true;
+            updateThread.Priority = ThreadPriority.Highest;
             updateThread.Start();
         }
 
@@ -126,6 +129,8 @@ namespace MoveObjectWpf.StickSlip
                     logger.Error("No FTDI device found");
                     MessageBox.Show("Error: No FTDI device found");
                 }
+
+
             }
 
             return device;
@@ -144,18 +149,18 @@ namespace MoveObjectWpf.StickSlip
                     writeToController |= 0x80;
                     getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
                     //logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
-                    Thread.Sleep(PEAK_TIME_IN_MS);
+                    SleepForMilliseconds(PEAK_TIME_IN_MS);
 
                     // start with peak voltage for x seconds (000000B | toWrite)
                     writeToController ^= 0x80;
                     getFtdiDevice().Write(new byte[] { writeToController }, 1, ref bytesWritten);
                     //logger.Debug("Sending " + Convert.ToString(writeToController, 2).PadLeft(8, '0'));
-                    Thread.Sleep(ON_TIME_IN_MS);
+                    SleepForMilliseconds(ON_TIME_IN_MS);
 
                     // stop for x seconds
                     getFtdiDevice().Write(new byte[] { 0x0 }, 1, ref bytesWritten);
                     //logger.Debug("Sending " + Convert.ToString(0x0, 2).PadLeft(8, '0'));
-                    Thread.Sleep(OFF_TIME_IN_MS);
+                    SleepForMilliseconds(OFF_TIME_IN_MS);
 
                     if (bytesWritten != 1)
                     {
@@ -167,6 +172,24 @@ namespace MoveObjectWpf.StickSlip
                     Thread.Sleep(ON_TIME_IN_MS + PEAK_TIME_IN_MS);
                 }
             }
+        }
+
+
+        // The problem is that the tablet doesn't execute Thread.Sleep properly. To make the 
+        // program wait for a small amount of time it is better to use this function (ugly fix)
+        private void SleepForMilliseconds(int millisecondsToWait)
+        {
+            Stopwatch counter = Stopwatch.StartNew();
+            
+            while (true)
+            {
+                if (counter.ElapsedMilliseconds >= millisecondsToWait)
+                {
+                    counter.Stop();
+                    break;
+                }
+            }
+            logger.Debug("Waited for " + counter.ElapsedMilliseconds + " ms");
         }
     }
 }

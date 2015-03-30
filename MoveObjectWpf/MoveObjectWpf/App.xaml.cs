@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using log4net.Config;
+using log4net.Appender;
 
 namespace MoveObjectWpf
 {
@@ -10,7 +11,7 @@ namespace MoveObjectWpf
     {
         public App()
         {
-            BasicConfigurator.Configure();
+
         }
     }
 }

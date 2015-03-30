@@ -10,7 +10,7 @@ namespace MoveOptimization
     {
         public App()
         {
-            BasicConfigurator.Configure();
+
         }
     }
 }
