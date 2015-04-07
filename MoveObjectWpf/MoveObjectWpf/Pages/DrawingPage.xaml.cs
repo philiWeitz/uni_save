@@ -16,10 +16,13 @@ namespace MoveObjectWpf.Views
     /// </summary>
     public partial class DrawingPage : Page
     {
-        private static readonly int MIN_DISTANCE = int.Parse(Resource.MIN_PIXEL_DISTANCY);
+        private static int MIN_DISTANCE = int.Parse(Resource.MIN_PIXEL_DISTANCY);
 
         private StickSlipControl stickSlipControl;
         private IEnumerator stylusEnumerator = null;
+
+        private StrokeCollection pathStrokes = new StrokeCollection();
+
 
         public DrawingPage()
         {
@@ -33,6 +36,7 @@ namespace MoveObjectWpf.Views
             sliderOn.Value = double.Parse(Resource.ON_TIME_IN_MS);
             sliderOff.Value = double.Parse(Resource.OFF_TIME_IN_MS);
             sliderPeak.Value = double.Parse(Resource.PEAK_TIME_IN_MS);
+            testBoxPixels.Text = MIN_DISTANCE.ToString();
 
             drawingCanvas.AddHandler(InkCanvas.MouseDownEvent, new MouseButtonEventHandler(InkCanvas_MouseDown), true);
         }
@@ -50,7 +54,9 @@ namespace MoveObjectWpf.Views
             drawingControlButton.Content = "Stop Drawing";
             //canvasOverlay.Visibility = System.Windows.Visibility.Hidden;
 
-            drawingCanvas.DefaultDrawingAttributes.Color = Colors.Black;
+            pathStrokes.Clear();
+
+            drawingCanvas.DefaultDrawingAttributes.Color = Colors.LightBlue;
             stylusEnumerator = null;
         }
 
@@ -58,6 +64,8 @@ namespace MoveObjectWpf.Views
         {
             drawingControlButton.Content = "Start Drawing";
             //canvasOverlay.Visibility = System.Windows.Visibility.Visible;
+
+            pathStrokes = drawingCanvas.Strokes.Clone();
 
             drawingCanvas.DefaultDrawingAttributes.Color = Colors.Red;
             setStylusEnumerator();
@@ -69,6 +77,7 @@ namespace MoveObjectWpf.Views
             {
                 // get the first stroke
                 IEnumerator strokeEnumerator = drawingCanvas.Strokes.GetEnumerator();
+                strokeEnumerator.Reset();
                 strokeEnumerator.MoveNext();
 
                 Stroke stroke = (Stroke)strokeEnumerator.Current;
@@ -132,8 +141,15 @@ namespace MoveObjectWpf.Views
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
             drawingCanvas.Strokes.Clear();
+            drawingCanvas.Strokes = pathStrokes.Clone();
+
+            setStylusEnumerator();
         }
 
+        private void testBoxPixels_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MIN_DISTANCE = int.Parse(testBoxPixels.Text);
+        }
 
         /************** touch screen events ***************************/
 
@@ -151,19 +167,19 @@ namespace MoveObjectWpf.Views
 
         private void canvasOverlay_TouchMove(object sender, TouchEventArgs e)
         {
-            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            Point cursorPosition = e.GetTouchPoint(drawingCanvas).Position;
             onMouseMove(cursorPosition);
         }
 
         private void canvasOverlay_TouchEnter(object sender, TouchEventArgs e)
         {
-            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            Point cursorPosition = e.GetTouchPoint(drawingCanvas).Position;
             onMouseMove(cursorPosition);
         }
 
         private void canvasOverlay_TouchDown(object sender, TouchEventArgs e)
         {
-            Point cursorPosition = e.GetTouchPoint(canvasOverlay).Position;
+            Point cursorPosition = e.GetTouchPoint(drawingCanvas).Position;
             onMouseMove(cursorPosition);
         }
 
@@ -184,19 +200,19 @@ namespace MoveObjectWpf.Views
 
         private void canvasOverlay_StylusMove(object sender, StylusEventArgs e)
         {
-            Point cursorPosition = e.GetPosition(canvasOverlay);
+            Point cursorPosition = e.GetPosition(drawingCanvas);
             onMouseMove(cursorPosition);
         }
 
         private void canvasOverlay_StylusDown(object sender, StylusDownEventArgs e)
         {
-            Point cursorPosition = e.GetPosition(canvasOverlay);
+            Point cursorPosition = e.GetPosition(drawingCanvas);
             onMouseMove(cursorPosition);
         }
 
         private void canvasOverlay_StylusEnter(object sender, StylusEventArgs e)
         {
-            Point cursorPosition = e.GetPosition(canvasOverlay);
+            Point cursorPosition = e.GetPosition(drawingCanvas);
             onMouseMove(cursorPosition);
         }
 
@@ -222,7 +238,7 @@ namespace MoveObjectWpf.Views
         private void canvasOverlay_MouseDownEvent(object sender, MouseButtonEventArgs e)
         {
             #if DEBUG
-                Point cursorPosition = e.GetPosition(canvasOverlay);
+                Point cursorPosition = e.GetPosition(drawingCanvas);
                 onMouseMove(cursorPosition);
             #endif
         }
@@ -230,7 +246,7 @@ namespace MoveObjectWpf.Views
         private void canvasOverlay_MouseMove(object sender, MouseEventArgs e)
         {
             #if DEBUG
-                Point cursorPosition = e.GetPosition(canvasOverlay);
+                Point cursorPosition = e.GetPosition(drawingCanvas);
                 onMouseMove(cursorPosition);
             #endif
         }

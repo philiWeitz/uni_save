@@ -11,9 +11,8 @@
 
     <Grid Width="602">
         <ToggleButton Name="drawingControlButton" IsChecked="False" Content="Start Drawing" HorizontalAlignment="Left" Margin="10,10,0,0" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="drawingControlButton_Checked" Unchecked="drawingControlButton_Unchecked" />
-        <InkCanvas Name="drawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" Background="Beige" />
-        <Rectangle Name="canvasOverlay"  Visibility="Hidden" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
-        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Left" Margin="200,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="200" />
+        <InkCanvas Name="drawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" Background="Beige"  MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
+        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Left" Margin="351,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="200" />
 
         <Ellipse Name="actuatorLeft" Fill="Transparent" HorizontalAlignment="Left" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
         <Ellipse Name="actuatorRight" Fill="Transparent" HorizontalAlignment="Right" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
@@ -28,6 +27,9 @@
         <Slider Name="sliderOn" Minimum="1" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="203,72,0,0" VerticalAlignment="Top" Width="162" ValueChanged="sliderOn_ValueChanged"/>
         <Slider Name="sliderOff" Minimum="1" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="389,72,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.083,0.045" Width="193" ValueChanged="sliderOff_ValueChanged"/>
         <Button Content="Clear" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="clearButton_Click"/>
+
+        <TextBox Name="testBoxPixels" HorizontalAlignment="Left" Height="20" Margin="203,22,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" TextAlignment="Center" TextChanged="testBoxPixels_TextChanged"/>
+        <Label Content="Pixels" HorizontalAlignment="Left" Margin="198,2,0,0" VerticalAlignment="Top" Height="28" Width="45"/>
 
     </Grid>
 </Page>
