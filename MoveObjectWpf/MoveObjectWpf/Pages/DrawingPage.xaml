@@ -12,8 +12,8 @@
     <Grid Width="602">
         <ToggleButton Name="drawingControlButton" IsChecked="False" Content="Start Drawing" HorizontalAlignment="Left" Margin="10,10,0,0" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="drawingControlButton_Checked" Unchecked="drawingControlButton_Unchecked" />
         <InkCanvas Name="drawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" Background="Beige" />
-        <Rectangle Name="canvasOverlay"  Visibility="Visible" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
-        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Left" Margin="110,16,10,10" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="200" />
+        <Rectangle Name="canvasOverlay"  Visibility="Hidden" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
+        <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Left" Margin="200,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="200" />
 
         <Ellipse Name="actuatorLeft" Fill="Transparent" HorizontalAlignment="Left" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
         <Ellipse Name="actuatorRight" Fill="Transparent" HorizontalAlignment="Right" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
@@ -24,9 +24,10 @@
         <Label Name="labelOn" Content="On" HorizontalAlignment="Left" Margin="203,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,-0.769"/>
         <Label Name="labelOff" Content="Off" HorizontalAlignment="Left" Margin="389,46,0,0" VerticalAlignment="Top"/>
 
-        <Slider Name="sliderPeak" Minimum="1" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="173" ValueChanged="sliderPeak_ValueChanged"/>
-        <Slider Name="sliderOn" Minimum="1" Maximum="30" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="203,72,0,0" VerticalAlignment="Top" Width="162" ValueChanged="sliderOn_ValueChanged"/>
-        <Slider Name="sliderOff" Minimum="1" Maximum="30" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="389,72,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.083,0.045" Width="193" ValueChanged="sliderOff_ValueChanged"/>
+        <Slider Name="sliderPeak" Minimum="1" Maximum="20" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="173" ValueChanged="sliderPeak_ValueChanged"/>
+        <Slider Name="sliderOn" Minimum="1" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="203,72,0,0" VerticalAlignment="Top" Width="162" ValueChanged="sliderOn_ValueChanged"/>
+        <Slider Name="sliderOff" Minimum="1" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Margin="389,72,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.083,0.045" Width="193" ValueChanged="sliderOff_ValueChanged"/>
+        <Button Content="Clear" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="clearButton_Click"/>
 
     </Grid>
 </Page>

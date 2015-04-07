@@ -7,6 +7,7 @@ using System.Windows.Ink;
 using System.Windows.Input;
 using MoveObjectWpf.Properties;
 using MoveObjectWpf.StickSlip;
+using System.Windows.Media;
 
 namespace MoveObjectWpf.Views
 {
@@ -38,22 +39,27 @@ namespace MoveObjectWpf.Views
 
         private void InkCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            drawingCanvas.Strokes.Clear();
+            if (drawingControlButton.IsChecked.Value)
+            {
+                drawingCanvas.Strokes.Clear();
+            }
         }
 
         private void drawingControlButton_Checked(object sender, RoutedEventArgs e)
         {
             drawingControlButton.Content = "Stop Drawing";
-            canvasOverlay.Visibility = System.Windows.Visibility.Hidden;
+            //canvasOverlay.Visibility = System.Windows.Visibility.Hidden;
 
+            drawingCanvas.DefaultDrawingAttributes.Color = Colors.Black;
             stylusEnumerator = null;
         }
 
         private void drawingControlButton_Unchecked(object sender, RoutedEventArgs e)
         {
             drawingControlButton.Content = "Start Drawing";
-            canvasOverlay.Visibility = System.Windows.Visibility.Visible;
+            //canvasOverlay.Visibility = System.Windows.Visibility.Visible;
 
+            drawingCanvas.DefaultDrawingAttributes.Color = Colors.Red;
             setStylusEnumerator();
         }
 
@@ -80,7 +86,7 @@ namespace MoveObjectWpf.Views
         {
             if (null != stylusEnumerator)
             {
-                cursorPositionTextBlock.Text = "X: " + cursorPosition.X.ToString() + " - Y: " + cursorPosition.Y.ToString();
+                cursorPositionTextBlock.Text = "X: " + (int) cursorPosition.X + " - Y: " + (int) cursorPosition.Y;
 
                 Point destination = ((StylusPoint)stylusEnumerator.Current).ToPoint();
                 double distance = PointUtil.getDistance(cursorPosition, destination);
@@ -103,6 +109,29 @@ namespace MoveObjectWpf.Views
 
                 stickSlipControl.adjustActuation(cursorPosition, destination);
             }
+        }
+
+        private void sliderPeak_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelPeak.Content = "Peak (" + sliderPeak.Value + ")";
+            SerialPortUtil.PEAK_TIME_IN_MS = (int)sliderPeak.Value;
+        }
+
+        private void sliderOn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelOn.Content = "On (" + sliderOn.Value + ")";
+            SerialPortUtil.ON_TIME_IN_MS = (int)sliderOn.Value;
+        }
+
+        private void sliderOff_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelOff.Content = "Off (" + sliderOff.Value + ")";
+            SerialPortUtil.OFF_TIME_IN_MS = (int)sliderOff.Value;
+        }
+
+        private void clearButton_Click(object sender, RoutedEventArgs e)
+        {
+            drawingCanvas.Strokes.Clear();
         }
 
 
@@ -204,24 +233,6 @@ namespace MoveObjectWpf.Views
                 Point cursorPosition = e.GetPosition(canvasOverlay);
                 onMouseMove(cursorPosition);
             #endif
-        }
-
-        private void sliderPeak_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelPeak.Content = "Peak (" + sliderPeak.Value + ")";
-            SerialPortUtil.PEAK_TIME_IN_MS = (int) sliderPeak.Value;
-        }
-
-        private void sliderOn_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelOn.Content = "On (" + sliderOn.Value + ")";
-            SerialPortUtil.ON_TIME_IN_MS = (int)sliderOn.Value;
-        }
-
-        private void sliderOff_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            labelOff.Content = "Off (" + sliderOff.Value + ")";
-            SerialPortUtil.OFF_TIME_IN_MS = (int)sliderOff.Value;
         }
     }
 }
