@@ -14,12 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 
 public class TcpClient {
-	
-	private static final String SERVER_COMMAND_DTR = "DTR";
-	private static final String SERVER_COMMAND_RTS = "RTS";	
-	private static final String SERVER_COMMAND_HC = "HC";
-	
-	
+
 	private static Logger LOG = LogManager.getLogger(TcpClient.class);
 	private static TcpClient instance;
 	
@@ -86,7 +81,8 @@ public class TcpClient {
 	}
 	
 	
-	public void sendMessage(String msg) {
+	public void sendCommand(ServerCommand command, String body) {
+		String msg = ServerCommand.createServerCommand(command, body);		
 		LOG.info(msg);
 		
 		if(connected) {
@@ -94,6 +90,11 @@ public class TcpClient {
 		} else {
 			LOG.error("TCP Error: Not connected to log server");
 		}
+	}
+	
+	
+	public void sendCommand(ServerCommand command) {
+		sendCommand(command, StringUtils.EMPTY);
 	}
 	
 	
@@ -118,13 +119,50 @@ public class TcpClient {
 				
 				while((clientData = inFromClient.readLine()) != null) {
 					LOG.info("Received from server - " + clientData);
-							
-					if(SERVER_COMMAND_RTS.equals(clientData)) {
-						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
-					} else if(SERVER_COMMAND_DTR.equals(clientData)) {
-						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-					} else if(SERVER_COMMAND_HC.equals(clientData)) {
-						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
+					
+					ServerCommand command = ServerCommand.serverStringToCommand(clientData);
+					
+					switch (command) {
+						case Next:
+							break;
+						case Invalid_Command:
+							break;
+						case CurrentState:
+							break;
+						case NextScreen:
+							break;
+						case Previous:
+							break;
+						case PreviousScreen:
+							break;
+						case RequestInfo:
+							break;
+						case Select:
+							break;
+						case SelectScreen:
+							break;
+						case SetAnimation:
+							break;
+						case SetDigits:
+							break;
+						case SetGroup:
+							break;
+						case SetIcon:
+							break;
+						case SetLamp:
+							break;
+						case SetScrBright:
+							break;
+						case UnlightAll:
+							break;
+						case Dtr:
+							break;
+						case Hc:
+							break;
+						case Rts:
+							break;
+						default:
+							break;
 					}
 				}	
 

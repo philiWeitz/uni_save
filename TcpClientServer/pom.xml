@@ -20,7 +20,7 @@
 	<modules>
 		<module>TcpClient</module>
 		<module>TcpServer</module>
-		<module>TcpLeapMotion</module>
+        <!-- <module>TcpLeapMotion</module> -->
 	</modules>
 
 

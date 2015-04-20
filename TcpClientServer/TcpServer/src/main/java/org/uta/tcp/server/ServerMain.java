@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.uta.tcp.client.ServerCommand;
 import org.uta.tcp.client.TcpUtil;
 
 public class ServerMain {
@@ -44,13 +45,13 @@ public class ServerMain {
 			
 				switch(input) {
 					case 1: 
-						sendCommandToClients("RTS");
+						sendCommandToClients(ServerCommand.Rts);
 						break;
 					case 2: 
-						sendCommandToClients("DTR");
+						sendCommandToClients(ServerCommand.Dtr);
 						break;
 					case 3: 
-						sendCommandToClients("HC");
+						sendCommandToClients(ServerCommand.Hc);
 						break;
 					case 4: 
 						if(null != server) {
@@ -70,13 +71,16 @@ public class ServerMain {
 	}
 	
 	
-	private static void sendCommandToClients(String command) {
+	private static void sendCommandToClients(ServerCommand command) {
 		for(Socket client : clients) {
 
+			String msg = ServerCommand.createServerCommand(command, StringUtils.EMPTY);
+			
 			try {
 				PrintWriter outToServer = new PrintWriter(client.getOutputStream(),true);
-				outToServer.println(command);
-				LOG.info("Sending command \"" + command + "\" to client \"" + client.getInetAddress().getHostName() + "\"");
+				outToServer.println(msg);
+				
+				LOG.info("Sending command \"" + msg + "\" to client \"" + client.getInetAddress().getHostName() + "\"");
 			} catch (IOException e) {
 				LOG.error("Error sending command to \"" + client.getInetAddress().getHostName() + "\"", e);
 			}	

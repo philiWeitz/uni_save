@@ -37,15 +37,15 @@ public class ClientMain {
 				switch(input) {
 					case 1: 
 						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
-						TcpClient.getInstance().sendMessage("RTS");						
+						TcpClient.getInstance().sendCommand(ServerCommand.Rts);						
 						break;
 					case 2: 
 						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-						TcpClient.getInstance().sendMessage("DTR");
+						TcpClient.getInstance().sendCommand(ServerCommand.Dtr);	
 						break;
 					case 3: 
 						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
-						TcpClient.getInstance().sendMessage("HC");
+						TcpClient.getInstance().sendCommand(ServerCommand.Hc);
 						break;						
 					case 4:
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
