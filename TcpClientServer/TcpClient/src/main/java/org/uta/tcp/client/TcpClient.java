@@ -147,6 +147,9 @@ public class TcpClient {
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
+						case Nack:
+							// Nothing to do here
+							break;
 						case Ack:
 							ServerCommand.parseCommandCode(clientData);
 							break;

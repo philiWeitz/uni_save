@@ -13,6 +13,7 @@ public enum ServerCommand {
 	PreviousScreen,
 	SelectScreen,
 	Ack,
+	Nack,
 	Error;
 	
 	
