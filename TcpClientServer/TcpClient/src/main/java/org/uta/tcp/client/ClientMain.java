@@ -22,42 +22,28 @@ public class ClientMain {
 		TcpClient.getInstance().connectToServer();
 		
 		while(true) {
-			System.out.println("Please select an option:");
-			System.out.println("1. RTS");
-			System.out.println("2. DTR");
-			System.out.println("3. HC");
-			System.out.println("4. End");
+			System.out.println("Please type a command (exit for exit):");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
 				BufferedReader br=new BufferedReader(sr);
 
-				int input = Integer.parseInt(br.readLine());
-			
-				switch(input) {
-					case 1: 
-						SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
-						TcpClient.getInstance().sendCommand(ServerCommand.Rts);						
-						break;
-					case 2: 
-						SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-						TcpClient.getInstance().sendCommand(ServerCommand.Dtr);	
-						break;
-					case 3: 
-						SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
-						TcpClient.getInstance().sendCommand(ServerCommand.Hc);
-						break;						
-					case 4:
+				String input = br.readLine();
+				
+				if(!input.isEmpty()) {
+					ServerCommand command = ServerCommand.serverStringToCommand(input);
+	
+					if(input.equals("exit")) {
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
 						SerialPortController.closePortInstance(TcpUtil.rtsPort);
 						SerialPortController.closePortInstance(TcpUtil.dataPort);	
 						TcpClient.getInstance().disconnectFromServer();
 						return;
-					default: 
-						break;
+						
+					} else if(ServerCommand.Invalid_Command != command) {
+						TcpClient.getInstance().sendCommand(command);
+					}
 				}
-			} catch(NumberFormatException e) {
-				System.out.println("Please type in a valid integer number");
 			} catch (IOException e) {
 				LOG.error("Error while reading user input", e);
 			}		

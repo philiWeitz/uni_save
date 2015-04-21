@@ -124,44 +124,36 @@ public class TcpClient {
 					
 					switch (command) {
 						case Next:
-							break;
-						case Invalid_Command:
-							break;
-						case CurrentState:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();							
 							break;
 						case NextScreen:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case Previous:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case PreviousScreen:
-							break;
-						case RequestInfo:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case Select:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case SelectScreen:
+							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
-						case SetAnimation:
+						case Ack:
+							ServerCommand.parseCommandCode(clientData);
 							break;
-						case SetDigits:
+						case Error:
+							ServerCommand.parseCommandCode(clientData);
 							break;
-						case SetGroup:
-							break;
-						case SetIcon:
-							break;
-						case SetLamp:
-							break;
-						case SetScrBright:
-							break;
-						case UnlightAll:
-							break;
-						case Dtr:
-							break;
-						case Hc:
-							break;
-						case Rts:
-							break;
-						default:
+						case Invalid_Command:
 							break;
 					}
 				}	

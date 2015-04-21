@@ -10,7 +10,7 @@ public class ServerCommandsTest {
 	@Test
 	public void serverStringToCommandTest() {
 	
-		String toServerCommand = "!Next;testcommand";
+		String toServerCommand = "!Next:testcommand;";
 		ServerCommand command = ServerCommand.serverStringToCommand(toServerCommand);
 		assertEquals(ServerCommand.Next, command);
 
@@ -19,6 +19,7 @@ public class ServerCommandsTest {
 		assertEquals(ServerCommand.Next, command);
 	}
 	
+	
 	@Test
 	public void commandToServerStringTest() { 
 		
@@ -26,6 +27,23 @@ public class ServerCommandsTest {
 		String body = "test";
 		
 		String serverString = ServerCommand.createServerCommand(command, body);
-		assertEquals("!Next;test", serverString);
+		assertEquals("!Next:test;", serverString);
+	}
+	
+	
+	@Test
+	public void parseCommandCodeTest() { 
+		
+		String toServerCommand = "!Ack:!Next:2;";	
+		int commandCode = ServerCommand.parseCommandCode(toServerCommand);
+		assertEquals(2, commandCode);
+		
+		toServerCommand = "!Error:!Next:503;";
+		commandCode = ServerCommand.parseCommandCode(toServerCommand);
+		assertEquals(503, commandCode);
+		
+		toServerCommand = "!Next:testcommand;";
+		commandCode = ServerCommand.parseCommandCode(toServerCommand);
+		assertEquals(Integer.MIN_VALUE, commandCode);			
 	}
 }

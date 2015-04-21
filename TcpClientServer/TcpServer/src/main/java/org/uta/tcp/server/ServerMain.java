@@ -12,7 +12,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.uta.tcp.client.ServerCommand;
 import org.uta.tcp.client.TcpUtil;
 
 public class ServerMain {
@@ -31,39 +30,26 @@ public class ServerMain {
 		clientListener.start();
 		
 		while(true) {
-			System.out.println("Please select an option:");
-			System.out.println("1. RTS");
-			System.out.println("2. DTR");
-			System.out.println("3. HC");
-			System.out.println("4. End");
+			System.out.println("Please type a command (exit for exit):");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
 				BufferedReader br=new BufferedReader(sr);
 
-				int input = Integer.parseInt(br.readLine());
-			
-				switch(input) {
-					case 1: 
-						sendCommandToClients(ServerCommand.Rts);
-						break;
-					case 2: 
-						sendCommandToClients(ServerCommand.Dtr);
-						break;
-					case 3: 
-						sendCommandToClients(ServerCommand.Hc);
-						break;
-					case 4: 
+				String input = br.readLine();
+				
+				if(!input.isEmpty()) {
+					if(input.equals("exit")) {
 						if(null != server) {
 							server.close();
 						}
 						clientListener.join();
-						return;						
-					default: 						
-						break;
+						return;	
+					} else {
+						sendCommandToClients(input);
+					}
 				}
-			} catch(NumberFormatException e) {
-				System.out.println("Please type in a valid integer number");
+				
 			} catch (IOException e) {
 				LOG.error("Error while reading user input", e);
 			}	
@@ -71,16 +57,14 @@ public class ServerMain {
 	}
 	
 	
-	private static void sendCommandToClients(ServerCommand command) {
+	private static void sendCommandToClients(String command) {
 		for(Socket client : clients) {
 
-			String msg = ServerCommand.createServerCommand(command, StringUtils.EMPTY);
-			
 			try {
 				PrintWriter outToServer = new PrintWriter(client.getOutputStream(),true);
-				outToServer.println(msg);
+				outToServer.println(command);
 				
-				LOG.info("Sending command \"" + msg + "\" to client \"" + client.getInetAddress().getHostName() + "\"");
+				LOG.info("Sending command \"" + command + "\" to client \"" + client.getInetAddress().getHostName() + "\"");
 			} catch (IOException e) {
 				LOG.error("Error sending command to \"" + client.getInetAddress().getHostName() + "\"", e);
 			}	
