@@ -29,8 +29,10 @@ public class ServerMain {
 		clientListener.setPriority(Thread.NORM_PRIORITY);
 		clientListener.start();
 		
+		System.out.println("Server successfully started. Listening for clients on port " + TcpUtil.TCP_PORT);
+		
 		while(true) {
-			System.out.println("Please type a command (exit for exit):");
+			System.out.println("Please type a command (:q for exit):");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
@@ -39,7 +41,7 @@ public class ServerMain {
 				String input = br.readLine();
 				
 				if(!input.isEmpty()) {
-					if(input.equals("exit")) {
+					if(input.equals(":q")) {
 						if(null != server) {
 							server.close();
 						}

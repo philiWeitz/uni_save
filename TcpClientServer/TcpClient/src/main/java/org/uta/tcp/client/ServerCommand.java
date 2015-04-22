@@ -21,7 +21,7 @@ public enum ServerCommand {
 	private static final String COMMAND_SECTION_SEPERATOR = ":";	
 	private static final String COMMAND_END = ";";	
 	
-	private static final Pattern COMMAND_CODE_PATTERN = Pattern.compile(":[0-9]+;");
+	private static final Pattern COMMAND_CODE_PATTERN = Pattern.compile(":(-)?[0-9]+;");
 	
 	
 	

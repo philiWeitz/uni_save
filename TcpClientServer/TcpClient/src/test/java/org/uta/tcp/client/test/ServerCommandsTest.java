@@ -42,6 +42,10 @@ public class ServerCommandsTest {
 		commandCode = ServerCommand.parseCommandCode(toServerCommand);
 		assertEquals(503, commandCode);
 		
+		toServerCommand = "!Error:!Next:-3;";
+		commandCode = ServerCommand.parseCommandCode(toServerCommand);
+		assertEquals(-3, commandCode);
+		
 		toServerCommand = "!Next:testcommand;";
 		commandCode = ServerCommand.parseCommandCode(toServerCommand);
 		assertEquals(Integer.MIN_VALUE, commandCode);			

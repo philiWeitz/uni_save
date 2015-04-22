@@ -22,6 +22,10 @@ public class TcpClient {
 	private Socket clientSocket;
 	private PrintWriter outToServer;
 	private boolean connected = false;
+
+	
+	private int tcpPort = TcpUtil.TCP_PORT;
+	private String serverAddress = TcpUtil.SERVER_ADDRESS;
 	
 	
 	public static TcpClient getInstance() {
@@ -41,12 +45,9 @@ public class TcpClient {
 	public boolean connectToServer() {
 		try {
 			
-			LOG.info("Trying to connect to " + TcpUtil.SERVER_ADDRESS);
-
-			clientSocket = new Socket(TcpUtil.SERVER_ADDRESS,
-					TcpUtil.TCP_PORT);			
-
-			LOG.info("Connected to " + TcpUtil.SERVER_ADDRESS);
+			LOG.info("Trying to connect to " + serverAddress + " on port: " + tcpPort);
+			clientSocket = new Socket(serverAddress, tcpPort);
+			LOG.info("Connected to " + serverAddress);
 			
 			outToServer = new PrintWriter(clientSocket.getOutputStream(),true);			
 
@@ -59,11 +60,14 @@ public class TcpClient {
 			
 			return true;
 		} catch (UnknownHostException e) {
-			LOG.error("Can't connect to " + TcpUtil.SERVER_ADDRESS, e);
+			LOG.error("Can't connect to " + serverAddress, e);
+			return addServerCredentials();
+			
 		} catch (IOException e) {
-			LOG.error("Error: can't connect to \"" + TcpUtil.SERVER_ADDRESS + "\"");
+			LOG.error("Error: can't connect to \"" + serverAddress + "\"");
+			return addServerCredentials();
+			
 		}
-		return false;
 	}
 
 	
@@ -90,6 +94,26 @@ public class TcpClient {
 		} else {
 			LOG.error("TCP Error: Not connected to log server");
 		}
+	}
+	
+	
+	private boolean addServerCredentials() {
+		InputStreamReader sr =new InputStreamReader(System.in);
+		BufferedReader br=new BufferedReader(sr);
+		
+		try {
+			System.out.println("Please type in the server hostname");
+			serverAddress = br.readLine();
+			
+			System.out.println("Please type in the server port");
+			tcpPort = Integer.parseInt(br.readLine());
+			
+			return connectToServer();
+		} catch (Exception e) {
+			// continue without server
+		}
+		
+		return false;
 	}
 	
 	

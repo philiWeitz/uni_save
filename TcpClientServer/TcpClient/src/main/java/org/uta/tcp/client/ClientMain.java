@@ -22,7 +22,7 @@ public class ClientMain {
 		TcpClient.getInstance().connectToServer();
 		
 		while(true) {
-			System.out.println("Please type a command (exit for exit):");
+			System.out.println("Please type a command (:q for exit):");
 			
 			try {
 				InputStreamReader sr =new InputStreamReader(System.in);
@@ -33,7 +33,7 @@ public class ClientMain {
 				if(!input.isEmpty()) {
 					ServerCommand command = ServerCommand.serverStringToCommand(input);
 	
-					if(input.equals("exit")) {
+					if(input.equals(":q")) {
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
 						SerialPortController.closePortInstance(TcpUtil.rtsPort);
 						SerialPortController.closePortInstance(TcpUtil.dataPort);	
