@@ -81,7 +81,7 @@ public class TcpClient {
 	}
 	
 	
-	public void sendCommand(ServerCommand command, String body) {
+	public void sendCommand(ServerCommand command, String... body) {
 		String msg = ServerCommand.createServerCommand(command, body);		
 		LOG.info(msg);
 		
@@ -90,11 +90,6 @@ public class TcpClient {
 		} else {
 			LOG.error("TCP Error: Not connected to log server");
 		}
-	}
-	
-	
-	public void sendCommand(ServerCommand command) {
-		sendCommand(command, StringUtils.EMPTY);
 	}
 	
 	

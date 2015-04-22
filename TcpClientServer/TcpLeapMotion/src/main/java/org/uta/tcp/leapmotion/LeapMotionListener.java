@@ -3,6 +3,7 @@ package org.uta.tcp.leapmotion;
 import java.util.Date;
 
 import org.uta.tcp.client.SerialPortController;
+import org.uta.tcp.client.ServerCommand;
 import org.uta.tcp.client.TcpClient;
 import org.uta.tcp.client.TcpUtil;
 
@@ -83,20 +84,23 @@ public class LeapMotionListener extends Listener {
 		
 		if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI / 2) {
 
+			// Gesture: Focus Right
 			SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-			TcpClient.getInstance().sendMessage("Gesture: Focus Right");
+			TcpClient.getInstance().sendCommand(ServerCommand.Next);
 
 		} else {
-
+			
+			// Gesture: Focus Left
 			SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
-			TcpClient.getInstance().sendMessage("Gesture: Focus Left");
+			TcpClient.getInstance().sendCommand(ServerCommand.Previous);
 		}
 	}
 	
 	
 	private void swipeGesture(Gesture g) {
+		// Gesture: Omni-Direction Swipe
 		SerialPortController.getPortInstance(TcpUtil.dataPort).sendData();
-		TcpClient.getInstance().sendMessage("Gesture: Omni-Direction Swipe");
+		TcpClient.getInstance().sendCommand(ServerCommand.Previous);
 	}
 	
 	
