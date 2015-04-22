@@ -189,7 +189,7 @@ namespace MoveObjectWpf.StickSlip
                     break;
                 }
             }
-            logger.Debug("Waited for " + counter.ElapsedMilliseconds + " ms");
+            //logger.Debug("Waited for " + counter.ElapsedMilliseconds + " ms");
         }
     }
 }

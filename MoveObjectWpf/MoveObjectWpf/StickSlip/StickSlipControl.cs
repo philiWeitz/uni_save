@@ -54,13 +54,13 @@ namespace MoveObjectWpf.StickSlip
 
             setActuatorColorToTransparent();
 
-            if (alphaAngle < 20)
+            if (alphaAngle < 25)
             {
                 // actuate leftRight
                 SerialPortUtil.getInstance().actuate(leftRight);
                 setActuatorColor(leftRight);
             }
-            else if (alphaAngle > 70)
+            else if (alphaAngle > 65)
             {
                 // actuate topBottom
                 SerialPortUtil.getInstance().actuate(topBottom);

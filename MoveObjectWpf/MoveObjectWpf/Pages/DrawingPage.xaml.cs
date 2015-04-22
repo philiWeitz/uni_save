@@ -8,6 +8,7 @@ using System.Windows.Input;
 using MoveObjectWpf.Properties;
 using MoveObjectWpf.StickSlip;
 using System.Windows.Media;
+using System;
 
 namespace MoveObjectWpf.Views
 {
@@ -19,8 +20,9 @@ namespace MoveObjectWpf.Views
         private static int MIN_DISTANCE = int.Parse(Resource.MIN_PIXEL_DISTANCY);
 
         private StickSlipControl stickSlipControl;
-        private IEnumerator stylusEnumerator = null;
 
+        private IEnumerator strokeEnumerator;
+        private IEnumerator stylusEnumerator = null;
         private StrokeCollection pathStrokes = new StrokeCollection();
 
 
@@ -37,58 +39,63 @@ namespace MoveObjectWpf.Views
             sliderOff.Value = double.Parse(Resource.OFF_TIME_IN_MS);
             sliderPeak.Value = double.Parse(Resource.PEAK_TIME_IN_MS);
             testBoxPixels.Text = MIN_DISTANCE.ToString();
-
-            drawingCanvas.AddHandler(InkCanvas.MouseDownEvent, new MouseButtonEventHandler(InkCanvas_MouseDown), true);
         }
 
-        private void InkCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (drawingControlButton.IsChecked.Value)
-            {
-                drawingCanvas.Strokes.Clear();
-            }
-        }
 
         private void drawingControlButton_Checked(object sender, RoutedEventArgs e)
         {
             drawingControlButton.Content = "Stop Drawing";
-            //canvasOverlay.Visibility = System.Windows.Visibility.Hidden;
 
             pathStrokes.Clear();
+            drawingCanvas.Strokes.Clear();
 
             drawingCanvas.DefaultDrawingAttributes.Color = Colors.LightBlue;
+
             stylusEnumerator = null;
+            strokeEnumerator = null;
         }
 
         private void drawingControlButton_Unchecked(object sender, RoutedEventArgs e)
         {
             drawingControlButton.Content = "Start Drawing";
-            //canvasOverlay.Visibility = System.Windows.Visibility.Visible;
 
             pathStrokes = drawingCanvas.Strokes.Clone();
-
             drawingCanvas.DefaultDrawingAttributes.Color = Colors.Red;
-            setStylusEnumerator();
+
+            getNextStylusPoint();
         }
 
-        private void setStylusEnumerator()
+        private bool getNextStylusPoint()
         {
-            if (null == stylusEnumerator && drawingCanvas.Strokes.Count > 0)
-            {
-                // get the first stroke
-                IEnumerator strokeEnumerator = drawingCanvas.Strokes.GetEnumerator();
-                strokeEnumerator.Reset();
-                strokeEnumerator.MoveNext();
+            if(pathStrokes.Count > 0) {
 
-                Stroke stroke = (Stroke)strokeEnumerator.Current;
+                // there is some data 
+                if(null == strokeEnumerator) {
+                    strokeEnumerator = pathStrokes.GetEnumerator();
+                    strokeEnumerator.Reset();
+                    stylusEnumerator = null;
+                } 
 
-                // get the first stylusPoint
-                if (stroke.StylusPoints.Count > 0)
+                // get next stylus point
+                if (null != stylusEnumerator && stylusEnumerator.MoveNext())
                 {
-                    stylusEnumerator = stroke.StylusPoints.GetEnumerator();
-                    stylusEnumerator.MoveNext();
+                    return true;
+                }
+                else if (strokeEnumerator.MoveNext())
+                {
+                    stylusEnumerator = ((Stroke)strokeEnumerator.Current).StylusPoints.GetEnumerator();
+                    stylusEnumerator.Reset();
+
+                    return stylusEnumerator.MoveNext();
+                }
+                else
+                {
+                    stylusEnumerator = null;
+                    strokeEnumerator = null;
                 }
             }
+
+            return false;
         }
 
         private void onMouseMove(Point cursorPosition)
@@ -103,17 +110,11 @@ namespace MoveObjectWpf.Views
                 // get next point
                 if (distance < MIN_DISTANCE)
                 {
-                    bool hasNext = stylusEnumerator.MoveNext();
-
-                    // no next point -> have reached the final destination
-                    if (!hasNext)
+                    if (getNextStylusPoint())
                     {
-                        stylusEnumerator = null;
-                        return;
+                        // get next point
+                        destination = ((StylusPoint)stylusEnumerator.Current).ToPoint();
                     }
-
-                    // get next point
-                    destination = ((StylusPoint)stylusEnumerator.Current).ToPoint();
                 }
 
                 stickSlipControl.adjustActuation(cursorPosition, destination);
@@ -143,12 +144,18 @@ namespace MoveObjectWpf.Views
             drawingCanvas.Strokes.Clear();
             drawingCanvas.Strokes = pathStrokes.Clone();
 
-            setStylusEnumerator();
+            strokeEnumerator = null;
+            getNextStylusPoint();
         }
 
         private void testBoxPixels_TextChanged(object sender, TextChangedEventArgs e)
         {
-            MIN_DISTANCE = int.Parse(testBoxPixels.Text);
+            try
+            {
+                int distance = int.Parse(testBoxPixels.Text);
+                MIN_DISTANCE = distance;
+            }
+            catch (Exception) { }
         }
 
         /************** touch screen events ***************************/

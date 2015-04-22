@@ -9,9 +9,9 @@
       MinHeight="100"
 	Title="Page1">
 
-    <Grid Width="602">
+    <Grid Width="auto">
         <ToggleButton Name="drawingControlButton" IsChecked="False" Content="Start Drawing" HorizontalAlignment="Left" Margin="10,10,0,0" Padding="5" VerticalAlignment="Top" Width="Auto" Checked="drawingControlButton_Checked" Unchecked="drawingControlButton_Unchecked" />
-        <InkCanvas Name="drawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,119,20,20" Background="Beige"  MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
+        <InkCanvas Name="drawingCanvas" Width="auto" Height="auto" Margin="20,119,20,20" Background="Beige"  MouseUp="canvasOverlay_MouseUpEvent" MouseDown="canvasOverlay_MouseDownEvent" MouseMove="canvasOverlay_MouseMove" TouchLeave="canvasOverlay_TouchLeave" TouchMove="canvasOverlay_TouchMove" TouchEnter="canvasOverlay_TouchEnter" TouchDown="canvasOverlay_TouchDown" TouchUp="canvasOverlay_TouchUp" MouseLeave="canvasOverlay_MouseLeave" StylusLeave="canvasOverlay_StylusLeave" StylusUp="canvasOverlay_StylusUp" StylusMove="canvasOverlay_StylusMove" StylusDown="canvasOverlay_StylusDown" StylusEnter="canvasOverlay_StylusEnter" />
         <TextBlock Name="cursorPositionTextBlock" HorizontalAlignment="Left" Margin="351,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="Auto" Width="200" />
 
         <Ellipse Name="actuatorLeft" Fill="Transparent" HorizontalAlignment="Left" Height="10" Margin="5,60,5,0" VerticalAlignment="Center" Width="10" />
