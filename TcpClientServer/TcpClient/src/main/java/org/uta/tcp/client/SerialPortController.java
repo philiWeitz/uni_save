@@ -22,8 +22,8 @@ public class SerialPortController {
 			new HashMap<PORT, SerialPortController>(); 
 	
 	
-	private static final int DTR_SLEEP = 500;
-	private static final int RTS_SLEEP = 500;
+	private static final int DTR_SLEEP = 100;
+	private static final int RTS_SLEEP = 100;
 	
 			
 	public enum PORT {
