@@ -22,6 +22,9 @@ android-support-v4.jar
 packages
 obj
 *.csproj.user
+*.opensdf
 
 # exceptions
 !FTD2XX_NET.dll
+!KeyboardAccess_x86.dll
+!KeyboardAccess_x64.dll
