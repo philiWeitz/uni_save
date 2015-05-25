@@ -20,6 +20,7 @@ public class ClientMain {
 	private static void mainMenu() {
 		
 		TcpClient.getInstance().connectToServer();
+		KeyboardController.getInstance().start();
 		
 		while(true) {
 			System.out.println("Please type a command (:q for exit):");
@@ -36,7 +37,9 @@ public class ClientMain {
 					if(input.equals(":q")) {
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
 						SerialPortController.closePortInstance(TcpUtil.rtsPort);
-						SerialPortController.closePortInstance(TcpUtil.dataPort);	
+						SerialPortController.closePortInstance(TcpUtil.dataPort);
+						
+						KeyboardController.getInstance().stop();
 						TcpClient.getInstance().disconnectFromServer();
 						return;
 						
