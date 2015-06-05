@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="TcpLeapMotion"/>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -32,11 +33,11 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/MyPrograms/LeapDeveloperKit_2.2.3/LeapSDK/lib/LeapJava.jar">
+	<classpathentry combineaccessrules="false" kind="src" path="/TcpClient"/>
+	<classpathentry kind="lib" path="G:/Development/LeapMotion/LeapSDK/lib/LeapJava.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/MyPrograms/LeapDeveloperKit_2.2.3/LeapSDK/lib/x64"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="G:/Development/LeapMotion/LeapSDK/lib/x64"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/TcpClient"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

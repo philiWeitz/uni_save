@@ -11,10 +11,12 @@ public class LeapMotionMain {
 	public static void main(String[] args) {
 
 		TcpClient.getInstance().connectToServer();
+		KeyboardController.getInstance().start();
 		
 		Controller controller = new Controller();
 		useListener(controller);
 		
+		KeyboardController.getInstance().stop();
 		TcpClient.getInstance().disconnectFromServer();
 	}
 	
