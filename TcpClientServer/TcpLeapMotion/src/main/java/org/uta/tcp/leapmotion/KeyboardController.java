@@ -1,12 +1,19 @@
 package org.uta.tcp.leapmotion;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.uta.tcp.client.SerialPortController;
 import org.uta.tcp.client.ServerCommand;
 import org.uta.tcp.client.TcpClient;
+import org.uta.tcp.client.TcpUtil;
 import org.uta.tcp.jni.KeyboardUtil;
 
 
 public class KeyboardController implements Runnable {
+	
 	private static KeyboardController instance;
+
+	private static Logger LOG = LogManager.getLogger(KeyboardController.class);	
 	
 	
 	public static KeyboardController getInstance() {
@@ -31,12 +38,13 @@ public class KeyboardController implements Runnable {
 	
 	public void start() {
 		if(!running) {		
+			LOG.debug("Starting KeyboardController thread...");
 			
 			running = true;
 			alreadyPressed = new boolean[256];
 
 			Thread thread = new Thread(this);
-			thread.setPriority(Thread.NORM_PRIORITY);
+			thread.setPriority(Thread.MIN_PRIORITY);
 			thread.setName("Keyboard Controller");
 			thread.start();
 		}
@@ -50,6 +58,8 @@ public class KeyboardController implements Runnable {
 	
 	@Override
 	public void run() {
+		LOG.debug("KeyboardController thread started");
+
 		while(running) {
 			short[] keys = KeyboardUtil.getKeyboardState();
 
@@ -58,16 +68,26 @@ public class KeyboardController implements Runnable {
 			keyToCommandMapping(keys, KeyboardVirtualKey.A, ServerCommand.PreviousScreen);
 			keyToCommandMapping(keys, KeyboardVirtualKey.D, ServerCommand.NextScreen);
 			keyToCommandMapping(keys, KeyboardVirtualKey.Q, ServerCommand.Select);
-			keyToCommandMapping(keys, KeyboardVirtualKey.Z, ServerCommand.Nack, "Half Pressed");
-			keyToCommandMapping(keys, KeyboardVirtualKey.X, ServerCommand.Nack, "Full Pressed");
+			keyToCommandMapping(keys, KeyboardVirtualKey.Z, ServerCommand.Nack, "pedal 50%");
+			keyToCommandMapping(keys, KeyboardVirtualKey.X, ServerCommand.Nack, "pedal 100%");
 		}
+		
+		LOG.debug("Stopping KeyboardController Thread");
 	}
 		
 	
 	private void keyToCommandMapping(short[] keys, int key, ServerCommand command, String... arg) {
 		if(keys[key] < 0 && !alreadyPressed[key]) {
+			
+			// send the command to the server
 			TcpClient.getInstance().sendCommand(command, arg);
+			// create haptic feedback by setting the dtr pulse
+			SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
+			// prevent from sending the command multiple times
 			alreadyPressed[key] = true;
+			
+			LOG.debug("Key with the virtual code '" + key + "' was pressed");
+			
 		} else if(keys[key] >= 0) {
 			alreadyPressed[key] = false;
 		}

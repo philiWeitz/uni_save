@@ -2,6 +2,8 @@ package org.uta.tcp.leapmotion;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.uta.tcp.client.SerialPortController;
 import org.uta.tcp.client.ServerCommand;
 import org.uta.tcp.client.TcpClient;
@@ -19,14 +21,18 @@ import com.leapmotion.leap.Vector;
 
 public class LeapMotionListener extends Listener {
 
+	private static Logger LOG = LogManager.getLogger(LeapMotionListener.class);	
+
 	private static final long GESTURE_TIME_OUT = 300;
 
 	private long lastGestureTime = 0;
 
 	
 	public void onConnect(Controller controller) {
-		System.out.println("Connected to leap motion");
-			
+		LOG.info("Connected to leap motion");
+
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		
 		controller.enableGesture(Type.TYPE_SWIPE);
 		controller.enableGesture(Type.TYPE_CIRCLE);
 		controller.enableGesture(Type.TYPE_SCREEN_TAP);
@@ -57,6 +63,8 @@ public class LeapMotionListener extends Listener {
 				// screen tap gesture only states STATE_STOP
 				if (g.state() == State.STATE_START 
 						|| g.type() == Type.TYPE_SCREEN_TAP && g.state() == State.STATE_STOP) {
+					
+					LOG.debug(g.type() + " gesture detected");
 					
 					switch (g.type()) {
 						case TYPE_SWIPE:
@@ -121,7 +129,6 @@ public class LeapMotionListener extends Listener {
 	
 	
 	private void screenTapGesture(Gesture g) {
-
 		SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 		SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 		TcpClient.getInstance().sendCommand(ServerCommand.Select);

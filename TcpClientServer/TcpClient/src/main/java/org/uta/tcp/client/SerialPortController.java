@@ -35,8 +35,8 @@ public class SerialPortController {
 	
 	public static SerialPortController getPortInstance(PORT port) {
 		if(!ports.containsKey(port)) {
-			
-			// connect to port
+
+			// connect to port			
 			SerialPortController controller = new SerialPortController(port);
 			controller.connectToSerialPort();
 			
@@ -73,7 +73,7 @@ public class SerialPortController {
 	private SerialPortController(PORT port) {
 		this.port = port;
 			
-		 BasicThreadFactory factory = new BasicThreadFactory.Builder()
+		BasicThreadFactory factory = new BasicThreadFactory.Builder()
 	     	.namingPattern("Serial Port")
 	     	.daemon(true)
 	     	.priority(Thread.MIN_PRIORITY)
@@ -84,17 +84,17 @@ public class SerialPortController {
 	
 		
 	public void setDtrPulse() {
-		startPortThread(new DtrThread());
+		executor.execute(new DtrThread());
 	}
 	
 	
 	public void setRtsPulse() {
-		startPortThread(new RtsThread());
+		executor.execute(new RtsThread());
 	}
 
 		
 	public void sendData() {
-		startPortThread(new sendDataThread());
+		executor.execute(new sendDataThread());
 	}
 	
 	
@@ -118,6 +118,8 @@ public class SerialPortController {
             return false;
         }
         
+		LOG.debug("Serial port " + port + " opened");
+		
         return true;
 	}
 	
@@ -126,6 +128,7 @@ public class SerialPortController {
 		if(null != serialPort && serialPort.isOpened()) {
             try {
 				serialPort.closePort();
+				LOG.debug("Serial port " + port + " closed");
 			} catch (SerialPortException e) {
 				LOG.error("Error while closing serial port " + port);
 			}
@@ -133,19 +136,10 @@ public class SerialPortController {
 	}
 	
 	
-	private void startPortThread(Runnable run) {
-
-		executor.execute(run);
-		
-		Thread thread = new Thread(run);
-		thread.setPriority(Thread.MIN_PRIORITY);
-		thread.setName("Serial Port Control");
-		thread.start();
-	}
-
-	
 	private class DtrThread implements Runnable {
 		public void run() {
+			
+			LOG.debug("Creating DTR pulse");
 
 			try {
 
@@ -172,6 +166,8 @@ public class SerialPortController {
 	private class RtsThread implements Runnable {
 		public void run() {
 
+			LOG.debug("Creating RTS pulse");
+
 			try {
 
 				// 2 pulses
@@ -195,6 +191,8 @@ public class SerialPortController {
 	
 	private class sendDataThread implements Runnable {
 		public void run() {
+
+			LOG.debug("Creating data pulse");
 
 			try {
 

@@ -57,6 +57,7 @@ public class TcpClient {
 			thread.start();
 			
 			connected = true;
+			LOG.debug("Connected to server");
 			
 			return true;
 		} catch (UnknownHostException e) {
@@ -78,6 +79,8 @@ public class TcpClient {
 				clientSocket.close();
 				connected = false;
 				
+				LOG.debug("Disconnected from server");
+
 			} catch (IOException e) {
 				LOG.error("Error while disconnecting from server", e);
 			}
@@ -91,6 +94,8 @@ public class TcpClient {
 		
 		if(connected) {
 			outToServer.println(msg);
+			
+			LOG.debug("Message send to server: '" + msg + "'");
 		} else {
 			LOG.error("TCP Error: Not connected to log server");
 		}

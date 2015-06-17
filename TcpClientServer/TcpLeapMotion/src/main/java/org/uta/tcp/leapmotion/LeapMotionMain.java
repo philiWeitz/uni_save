@@ -36,5 +36,7 @@ public class LeapMotionMain {
         }
 
         controller.removeListener(listener);
+        
+        System.out.println("TcpLeapMotion closed");
 	}
 }
