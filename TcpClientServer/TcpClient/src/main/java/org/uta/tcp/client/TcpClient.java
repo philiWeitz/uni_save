@@ -175,10 +175,12 @@ public class TcpClient {
 							// Nothing to do here
 							break;
 						case Ack:
-							ServerCommand.parseCommandCode(clientData);
+							int codeAck = ServerCommand.parseCommandCode(clientData);
+							LOG.debug("Received 'Ack' code: " + codeAck);
 							break;
 						case Error:
-							ServerCommand.parseCommandCode(clientData);
+							int codeError = ServerCommand.parseCommandCode(clientData);
+							LOG.debug("Received 'Error' code: " + codeError);
 							break;
 						case Invalid_Command:
 							break;

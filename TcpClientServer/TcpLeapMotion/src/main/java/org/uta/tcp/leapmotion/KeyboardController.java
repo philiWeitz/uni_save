@@ -13,6 +13,8 @@ public class KeyboardController implements Runnable {
 	
 	private static KeyboardController instance;
 
+	private static final int THREAD_TIME_OUT = 100;
+	
 	private static Logger LOG = LogManager.getLogger(KeyboardController.class);	
 	
 	
@@ -70,6 +72,12 @@ public class KeyboardController implements Runnable {
 			keyToCommandMapping(keys, KeyboardVirtualKey.Q, ServerCommand.Select);
 			keyToCommandMapping(keys, KeyboardVirtualKey.Z, ServerCommand.Nack, "pedal 50%");
 			keyToCommandMapping(keys, KeyboardVirtualKey.X, ServerCommand.Nack, "pedal 100%");
+		
+			try {
+				Thread.sleep(THREAD_TIME_OUT);
+			} catch (InterruptedException e) {
+				LOG.error(e);
+			}
 		}
 		
 		LOG.debug("Stopping KeyboardController Thread");
