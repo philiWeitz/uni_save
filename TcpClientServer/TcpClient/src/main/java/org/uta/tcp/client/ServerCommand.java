@@ -14,6 +14,7 @@ public enum ServerCommand {
 	SelectScreen,
 	Ack,
 	Nack,
+	SetSpn,
 	Error;
 	
 	

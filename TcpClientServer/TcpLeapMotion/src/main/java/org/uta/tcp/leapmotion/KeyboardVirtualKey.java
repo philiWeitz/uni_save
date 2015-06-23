@@ -15,6 +15,6 @@ public class KeyboardVirtualKey {
 	public static final int D = 0x44;
 	public static final int Q = 0x51;
 	public static final int Z = 0x5A;
-	public static final int X = 0x58;	
+	public static final int C = 0x43;	
 
 }

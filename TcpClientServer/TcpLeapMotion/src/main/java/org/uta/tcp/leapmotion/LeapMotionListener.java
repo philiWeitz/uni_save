@@ -31,7 +31,7 @@ public class LeapMotionListener extends Listener {
 	public void onConnect(Controller controller) {
 		LOG.info("Connected to leap motion");
 
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		//Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		
 		controller.enableGesture(Type.TYPE_SWIPE);
 		controller.enableGesture(Type.TYPE_CIRCLE);
