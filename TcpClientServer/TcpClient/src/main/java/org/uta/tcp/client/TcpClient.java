@@ -184,6 +184,10 @@ public class TcpClient {
 							break;
 						case Invalid_Command:
 							break;
+						case SetSpn:
+							// should only be send from client to server - nothing to do
+							LOG.debug("Received SetSpn");
+							break;
 					}
 				}	
 

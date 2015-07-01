@@ -13,6 +13,22 @@
 	<packaging>jar</packaging>
 	<name>TCP Leap Motion</name>
 
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.uta.tcp</groupId>
+			<artifactId>TcpClient</artifactId>
+		</dependency>
+
+		<!-- This dependency is installed by the parent POM -->
+		<dependency>
+			<groupId>com.leapmotion.leap</groupId>
+			<artifactId>leapMotion</artifactId>
+		</dependency>
+	</dependencies>
+
+
 	<build>
 		<plugins>
 			<plugin>
@@ -21,6 +37,7 @@
 				<configuration>
 					<archive>
 						<manifest>
+							<addClasspath>true</addClasspath>
 							<mainClass>org.uta.tcp.leapmotion.LeapMotionMain</mainClass>
 						</manifest>
 					</archive>

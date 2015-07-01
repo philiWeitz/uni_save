@@ -14,13 +14,16 @@
 		<log4j.version>2.0-rc1</log4j.version>
 		<junit.version>4.12</junit.version>
 		<commons.lang.version>3.3.2</commons.lang.version>
+
+		<leap.motion.version>2.2.6+29154</leap.motion.version>
+		<leap.motion.path>G:\Development/LeapMotion/LeapSDK/lib/LeapJava.jar</leap.motion.path>
 	</properties>
 
 
 	<modules>
 		<module>TcpClient</module>
 		<module>TcpServer</module>
-		<!-- <module>TcpLeapMotion</module> -->
+		<module>TcpLeapMotion</module>
 	</modules>
 
 
@@ -57,13 +60,51 @@
 					</executions>
 				</plugin>
 
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+
+				<executions>
+					<execution>
+						<id>install-leap-motion-jar</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${leap.motion.path}</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>com.leapmotion.leap</groupId>
+							<artifactId>leapMotion</artifactId>
+							<version>${leap.motion.version}</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencyManagement>
 		<dependencies>
 
+			<dependency>
+				<groupId>org.uta.tcp</groupId>
+				<artifactId>TcpClient</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
 			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
@@ -102,6 +143,11 @@
 				<version>${junit.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.leapmotion.leap</groupId>
+				<artifactId>leapMotion</artifactId>
+				<version>${leap.motion.version}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
