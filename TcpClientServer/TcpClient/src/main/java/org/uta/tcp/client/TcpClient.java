@@ -149,27 +149,21 @@ public class TcpClient {
 					switch (command) {
 						case Next:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();							
 							break;
 						case NextScreen:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case Previous:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case PreviousScreen:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case Select:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case SelectScreen:
 							SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-							SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 							break;
 						case Nack:
 							// Nothing to do here

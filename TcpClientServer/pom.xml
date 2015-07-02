@@ -16,7 +16,7 @@
 		<commons.lang.version>3.3.2</commons.lang.version>
 
 		<leap.motion.version>2.2.6+29154</leap.motion.version>
-		<leap.motion.path>G:\Development/LeapMotion/LeapSDK/lib/LeapJava.jar</leap.motion.path>
+		<leap.motion.path>C:\Development\LeapMotionSDK\LeapSDK\lib\LeapJava.jar</leap.motion.path>
 	</properties>
 
 

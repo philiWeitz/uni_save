@@ -102,7 +102,7 @@ public class LeapMotionListener extends Listener {
 		} else {
 			
 			// Gesture: Focus Left
-			SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
+			SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 			TcpClient.getInstance().sendCommand(ServerCommand.Previous);
 		}
 	}
@@ -121,7 +121,7 @@ public class LeapMotionListener extends Listener {
 		
 		// Left to Right Swipe Gestures
 		else if (directionX > 0) {
-			SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
+			SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
 			TcpClient.getInstance().sendCommand(ServerCommand.PreviousScreen);
 		}
 		
@@ -130,7 +130,6 @@ public class LeapMotionListener extends Listener {
 	
 	private void screenTapGesture(Gesture g) {
 		SerialPortController.getPortInstance(TcpUtil.dtrPort).setDtrPulse();
-		SerialPortController.getPortInstance(TcpUtil.rtsPort).setRtsPulse();
 		TcpClient.getInstance().sendCommand(ServerCommand.Select);
 	}	
 }

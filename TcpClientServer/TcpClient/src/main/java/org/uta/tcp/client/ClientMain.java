@@ -35,7 +35,6 @@ public class ClientMain {
 	
 					if(input.equals(":q")) {
 						SerialPortController.closePortInstance(TcpUtil.dtrPort);
-						SerialPortController.closePortInstance(TcpUtil.rtsPort);
 						SerialPortController.closePortInstance(TcpUtil.dataPort);
 						
 						TcpClient.getInstance().disconnectFromServer();
